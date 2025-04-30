@@ -1,4 +1,5 @@
 using UnityEngine;
+using UnityEngine.SceneManagement;
 using VContainer;
 
 public class GameEntryPoint : MonoBehaviour

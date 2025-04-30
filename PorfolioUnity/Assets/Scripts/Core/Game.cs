@@ -48,3 +48,10 @@ public interface IGameState : IDisposable
         return UniTask.CompletedTask;
     }
 }
+
+public enum Scene
+{
+    Main = 0,
+    Hub = 1,
+    Level = 2,
+}
