@@ -293,7 +293,8 @@ PrefabInstance:
       value: LevelRoot
       objectReference: {fileID: 0}
     m_RemovedComponents: []
-    m_RemovedGameObjects: []
+    m_RemovedGameObjects:
+    - {fileID: 3003789555344603632, guid: 29cb6fb18ac7dad428a22c0c54a067e1, type: 3}
     m_AddedGameObjects: []
     m_AddedComponents: []
   m_SourcePrefab: {fileID: 100100000, guid: 29cb6fb18ac7dad428a22c0c54a067e1, type: 3}

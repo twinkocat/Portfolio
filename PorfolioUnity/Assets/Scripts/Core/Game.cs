@@ -12,6 +12,7 @@ public class Game : IDisposable
     public static IObjectResolver Resolver { get; private set; }
     
     public static Quaternion IsometricMod { get; } = Quaternion.AngleAxis(-45F, Vector3.up);
+    
     public Game(IObjectResolver resolver)
     {
         _instance = this;
