@@ -1,6 +1,7 @@
 ﻿using VContainer;
 using System;
 using System.Threading;
+using UnityEngine;
 using Cysharp.Threading.Tasks;
 
 public class Game : IDisposable
@@ -9,8 +10,8 @@ public class Game : IDisposable
     private readonly GameStateController stateController;
     
     public static IObjectResolver Resolver { get; private set; }
-
     
+    public static Quaternion IsometricMod { get; } = Quaternion.AngleAxis(-45F, Vector3.up);
     public Game(IObjectResolver resolver)
     {
         _instance = this;

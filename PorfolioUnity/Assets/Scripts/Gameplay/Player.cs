@@ -28,11 +28,11 @@ public class Player : Character
     protected override void Tick(float deltaTime)
     {
         var input2D = moveAction.action.ReadValue<Vector2>();
-        var input3D = new Vector3(input2D.x, 0f, input2D.y);
+        var input3D = Game.IsometricMod * new Vector3(input2D.x, 0f, input2D.y);
         CharacterMovement.SetDestination(transform.position + input3D);
     }
 
-    private void OnDestroy()
+    public override void Dispose()
     {
         dashAction.action.started -= Dash;
     }
