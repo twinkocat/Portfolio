@@ -1,16 +1,15 @@
-﻿using System;
-using System.Linq;
-using Cysharp.Threading.Tasks;
+﻿using Cysharp.Threading.Tasks;
 using MyBox;
 using UnityEngine;
-using UnityEngine.Serialization;
 using VContainer;
+using VContainer.Unity;
 using ZLinq;
 using Random = UnityEngine.Random;
 
 public class LevelRoot : MonoBehaviour
 {
     [SerializeField] private LevelGeneratorStorage levelGeneratorStorage;
+    [SerializeField] private Transform tilesContainer;
     
     private Player playerInstance;
     private UniTask generationTask;
@@ -29,6 +28,10 @@ public class LevelRoot : MonoBehaviour
     
     private async UniTask GenerateLevelAsync()
     {
+        tilesContainer.DestroyAllChildren();
+        
+        await UniTask.DelayFrame(5);
+        
         var tilesOnLevel = levelGeneratorStorage.tilesOnTheLevel.GetValueRoundToInt();
         var lenght = levelGeneratorStorage.tileSize;
         var rawPoints = new Vector3[tilesOnLevel];
@@ -75,9 +78,7 @@ public class LevelRoot : MonoBehaviour
         }
         
         var tile = levelGeneratorStorage.GetTile(result);
-        var go = Instantiate(tile.tileGo);
-        
-        go.transform.position = position;
+        var go = Game.Resolver.Instantiate(tile.tileGo, position, Quaternion.identity, tilesContainer);
     }
     
     public void BackToHub()

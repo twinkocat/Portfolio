@@ -17,6 +17,7 @@ public abstract class Character : PoolableBehaviour
         CharacterMovement = GetComponent<CharacterMovement>();
         characterAbilities = new HashSet<CharacterAbility> (GetComponents<CharacterAbility>());
         Init();
+        characterAbilities.ForEach(ability => ability.Create());
         characterAbilities.ForEach(ability => ability.Init());
     }
 

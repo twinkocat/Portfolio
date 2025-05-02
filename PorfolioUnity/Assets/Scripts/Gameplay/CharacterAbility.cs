@@ -6,13 +6,11 @@ public abstract class CharacterAbility : MonoBehaviour
 {
     private Character owner;
 
-    public void Init()
+    public void Create() => owner = gameObject.GetComponent<Character>();
+    
+    public virtual void Init()
     {
-        owner = gameObject.GetComponent<Character>();
-        Init(owner);
     }
-
-    protected virtual void Init(Character character) { }
     
 #if USE_ABILITY_UPDATE
     protected virtual void Update()

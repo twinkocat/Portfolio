@@ -26,7 +26,7 @@ public class CharacterMovement : CharacterAbility
     private Vector3 moveVector;
     private Quaternion lookRotation;
 
-    protected override void Init(Character character)
+    public override void Init()
     {
         currentSpeed = defaultMoveSpeed;
     }
