@@ -1,0 +1,13 @@
+%YAML 1.1
+%TAG !u! tag:unity3d.com,2011:
+--- !u!221 &22100000
+AnimatorOverrideController:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_Name: BlacksmithController
+  m_Controller: {fileID: 9100000, guid: f84c7aa44548be24fb62d827022369ba, type: 2}
+  m_Clips:
+  - m_OriginalClip: {fileID: -203655887218126122, guid: 8b8cdfecfb98b204e8ba84fd2d4aff48, type: 3}
+    m_OverrideClip: {fileID: 2264077025236624520, guid: 876e45f6ca2825f458e26607aac9a91f, type: 3}
