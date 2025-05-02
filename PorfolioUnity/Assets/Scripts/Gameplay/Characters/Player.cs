@@ -7,11 +7,13 @@ public class Player : Character
     [SerializeField] private InputActionReference moveAction;
     [SerializeField] private InputActionReference dashAction;
 
+    private MovementAbility movement;
     private DashAbility dashAbility;
 
     protected override void Init()
     {
         dashAbility = GetComponent<DashAbility>();
+        movement = GetComponent<MovementAbility>();
     }
 
     protected override UniTask PostInit()
@@ -29,7 +31,7 @@ public class Player : Character
     {
         var input2D = moveAction.action.ReadValue<Vector2>();
         var input3D = Game.IsometricMod * new Vector3(input2D.x, 0f, input2D.y);
-        CharacterMovement.SetDestination(transform.position + input3D);
+        movement.SetDestination(transform.position + input3D);
     }
 
     public override void Dispose()

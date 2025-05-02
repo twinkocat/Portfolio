@@ -1,20 +1,16 @@
-﻿using System;
-using System.Collections.Generic;
+﻿using System.Collections.Generic;
 using Cysharp.Threading.Tasks;
 using MyBox;
 using UnityEngine;
 
-[RequireComponent(typeof(CharacterMovement))]
 public abstract class Character : PoolableBehaviour
 {
-    protected CharacterMovement CharacterMovement { get; set; }
     protected bool AllowTick { get; set; } = true;
 
     private HashSet<CharacterAbility> characterAbilities;
     
     private void Awake()
     {
-        CharacterMovement = GetComponent<CharacterMovement>();
         characterAbilities = new HashSet<CharacterAbility> (GetComponents<CharacterAbility>());
         Init();
         characterAbilities.ForEach(ability => ability.Create());
