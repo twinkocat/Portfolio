@@ -7,13 +7,15 @@ public class Player : Character
     [SerializeField] private InputActionReference moveAction;
     [SerializeField] private InputActionReference dashAction;
 
-    private MovementAbility movement;
+    private MovementAbility movementAbility;
     private DashAbility dashAbility;
+    private HealthAbility healthAbility;
 
     protected override void Init()
     {
         dashAbility = GetComponent<DashAbility>();
-        movement = GetComponent<MovementAbility>();
+        movementAbility = GetComponent<MovementAbility>();
+        healthAbility = GetComponent<HealthAbility>();
     }
 
     protected override UniTask PostInit()
@@ -31,7 +33,17 @@ public class Player : Character
     {
         var input2D = moveAction.action.ReadValue<Vector2>();
         var input3D = Game.IsometricMod * new Vector3(input2D.x, 0f, input2D.y);
-        movement.SetDestination(transform.position + input3D);
+        movementAbility.SetDestination(transform.position + input3D);
+    }
+
+    public override void Damage(Hit hit)
+    {
+        var damage = hit.InvokeDamage();
+        
+        if (!healthAbility.UpdateHealth(damage))
+        {
+            Debug.Log("Dead");    
+        }
     }
 
     public override void Dispose()

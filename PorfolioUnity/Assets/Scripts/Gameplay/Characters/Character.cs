@@ -3,9 +3,13 @@ using Cysharp.Threading.Tasks;
 using MyBox;
 using UnityEngine;
 
-public abstract class Character : PoolableBehaviour
+public abstract class Character : PoolableBehaviour, IDamageable
 {
-    protected bool AllowTick { get; set; } = true;
+    [SerializeField] protected bool allowTick = true;
+    [SerializeField] private DamageableFlags damageableFlags;
+    
+    public DamageableFlags DamageableFlags => damageableFlags;
+    public bool AllowTick => allowTick;
 
     private HashSet<CharacterAbility> characterAbilities;
     
@@ -21,7 +25,7 @@ public abstract class Character : PoolableBehaviour
     private async UniTaskVoid Start()
     {
         await PostInit();
-        await UniTask.WaitUntil(() => AllowTick);
+        await UniTask.WaitUntil(() => allowTick);
     }
     
     protected virtual void Init() { }
@@ -56,5 +60,7 @@ public abstract class Character : PoolableBehaviour
     {
     }
 
-   
+    public virtual void Damage(Hit hit)
+    {
+    }
 }
