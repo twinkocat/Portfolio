@@ -9,32 +9,34 @@ public abstract class Character : PoolableBehaviour, IDamageable
     [SerializeField] private DamageableFlags damageableFlags;
     
     public DamageableFlags DamageableFlags => damageableFlags;
-    public bool AllowTick => allowTick;
-
+    
     private HashSet<CharacterAbility> characterAbilities;
     
     private void Awake()
     {
         characterAbilities = new HashSet<CharacterAbility> (GetComponents<CharacterAbility>());
-        Init();
+        Create(); 
         characterAbilities.ForEach(ability => ability.Create());
-        characterAbilities.ForEach(ability => ability.Init());
     }
 
     // ReSharper disable once Unity.IncorrectMethodSignature
     private async UniTaskVoid Start()
     {
+        var storedAllowTick = allowTick;
+        allowTick = false;
+        await Init(); characterAbilities.ForEach(ability => ability.Init());
         await PostInit();
-        await UniTask.WaitUntil(() => allowTick);
+        allowTick = storedAllowTick;
     }
     
-    protected virtual void Init() { }
+    protected virtual void Create() { }
     
+    protected virtual UniTask Init() { return UniTask.CompletedTask; }
     protected virtual UniTask PostInit() { return UniTask.CompletedTask; }
 
     private void Update()
     {
-        if (!AllowTick) return;
+        if (!allowTick) return;
         
         Tick(Time.deltaTime);
 #if !USE_ABILITY_UPDATE
@@ -44,7 +46,7 @@ public abstract class Character : PoolableBehaviour, IDamageable
 
     private void LateUpdate()
     {
-        if (!AllowTick) return;
+        if (!allowTick) return;
         
         LateTick(Time.deltaTime);
 #if !USE_ABILITY_UPDATE

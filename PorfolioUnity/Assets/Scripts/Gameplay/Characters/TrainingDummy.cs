@@ -1,8 +1,10 @@
-﻿public class TrainingDummy : Character
+﻿using UnityEngine;
+
+public class TrainingDummy : Character
 {
     private HealthAbility healthAbility;
 
-    protected override void Init()
+    protected override void Create()
     {
         healthAbility = GetComponent<HealthAbility>();
     }

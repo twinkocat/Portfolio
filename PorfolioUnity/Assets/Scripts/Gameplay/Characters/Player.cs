@@ -1,4 +1,5 @@
-﻿using Cysharp.Threading.Tasks;
+﻿using System;
+using Cysharp.Threading.Tasks;
 using UnityEngine;
 using UnityEngine.InputSystem;
 
@@ -11,14 +12,14 @@ public class Player : Character
     private DashAbility dashAbility;
     private HealthAbility healthAbility;
 
-    protected override void Init()
+    protected override void Create()
     {
         dashAbility = GetComponent<DashAbility>();
         movementAbility = GetComponent<MovementAbility>();
         healthAbility = GetComponent<HealthAbility>();
     }
 
-    protected override UniTask PostInit()
+    protected override UniTask Init()
     {
         dashAction.action.started += Dash;
         return base.PostInit();
