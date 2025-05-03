@@ -9,11 +9,13 @@ public class Warrior_SlashSpellScript : SpellScript
     
     protected override async UniTask ExecuteSpellAsync()
     {
-        await UniTask.Delay(TimeSpan.FromSeconds(1)); // Animation Time
+        await UniTask.Yield(); // Animation Time
 
         var owner = GetOwner();
         var position = owner.transform.position;
         var direction = owner.transform.forward;
+        DebugShape.CreateCone(position, direction, CONE_ANGLE, CONE_LENGTH, 1F);
+        
         await ExecuteConeSpell(position, direction, CONE_LENGTH, CONE_ANGLE, DAMAGEABLE_FLAGS);
     }
 

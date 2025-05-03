@@ -8,11 +8,11 @@ public class Warrior_EarthShatterSpellScript : SpellScript
     
     protected override async UniTask ExecuteSpellAsync()
     {
-        await UniTask.Delay(TimeSpan.FromSeconds(1)); // Animation Time
-     
+        await UniTask.Yield();       
+
         var owner = GetOwner();
         var position = owner.transform.position;
-        
+        DebugShape.CreateCircle(position, RADIUS, 1F);
         await ExecuteCircleSpell(position, RADIUS, DAMAGEABLE_FLAGS);
     }
 
