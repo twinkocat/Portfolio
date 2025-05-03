@@ -5,9 +5,12 @@ public class Warrior_SmashSpellScript : SpellScript
 {
     private const TargetFlags DAMAGEABLE_FLAGS = TargetFlags.Enemy;
     private const float RADIUS = 2F;
+    private const float COOLDOWN = 1.5F;
     
     protected override async UniTask ExecuteSpellAsync(CancellationToken cancellationToken)
     {
+        SetCooldown(COOLDOWN);
+        
         var owner = GetOwner();
         var position = owner.transform.position;
         DebugShape.CreateCircle(position, RADIUS, 1F);

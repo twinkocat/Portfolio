@@ -1,4 +1,5 @@
 ﻿using System;
+using System.Collections.Generic;
 using System.Threading;
 using Cysharp.Threading.Tasks;
 using UnityEngine;
@@ -7,20 +8,28 @@ using UnityEngine;
 public abstract class SpellScript
 {
     public bool Done => executeTask.Status is not UniTaskStatus.Pending;
+    public bool OnCooldown => OnCooldownList.Contains(name);
     
     private CancellationTokenSource tokenSource; 
     private UniTask executeTask;
     private Character owner;
     private Animator animator;
-    
-    public void Init(Character spellOwner, Animator ownerAnimator)
+    private string name;
+    private static readonly List<string> OnCooldownList = new();
+
+    public void Init(Character spellOwner, Animator ownerAnimator, string spellName)
     {
+        name = spellName;
         owner = spellOwner;
         animator = ownerAnimator;
     }
 
     public void Execute()
     {
+        if (OnCooldown)
+        {
+            return;
+        }
         tokenSource = new CancellationTokenSource();
         executeTask = UniTask.Create(ExecuteSpellAsync, tokenSource.Token);
     }
@@ -46,6 +55,16 @@ public abstract class SpellScript
         return tOwner || !throwException ? tOwner : throw new NullReferenceException();
     }
 
+    protected void SetCooldown(float seconds, Action<CooldownData> callback = null, Action onComplete = null)
+    {
+        GameTime.CreateCooldown(seconds, callback, () =>
+        {
+            OnCooldownList.Remove(name);
+            onComplete?.Invoke();
+        });
+        OnCooldownList.Add(name);
+    }
+    
     protected async UniTask ExecuteConeSpell(Vector3 position, Vector3 direction, float lenght, float angle, TargetFlags flags)
     {
         await ExecuteConeSpell_Internal(position, direction, lenght, angle, flags, OnHit);
@@ -118,5 +137,11 @@ public abstract class SpellScript
     {
         return Physics.OverlapSphereNonAlloc(position, radius, results);
     }
-    
+
+    public static T Create<T>(Character spellOwner, Animator ownerAnimator, string spellName) where T : SpellScript, new()
+    {
+        var spell = new T();
+        spell.Init(spellOwner, ownerAnimator, spellName);
+        return spell;
+    }
 }

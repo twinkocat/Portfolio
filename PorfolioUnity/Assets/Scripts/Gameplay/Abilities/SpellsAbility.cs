@@ -18,12 +18,7 @@ public class SpellsAbility : CharacterAbility
 
     public void BindAbility<T>(string spellName) where T : SpellScript, new()
     {
-        spellBindings[spellName] = () =>
-        {
-            var spell = new T();
-            spell.Init(GetOwner(), animator);
-            return spell;
-        };
+        spellBindings[spellName] = () => SpellScript.Create<T>(GetOwner(), animator, spellName);
     }
     
     public void UnbindAbility(string spellName)

@@ -6,9 +6,12 @@ public class Warrior_SlashSpellScript : SpellScript
     private const TargetFlags DAMAGEABLE_FLAGS = TargetFlags.Enemy;
     private const float CONE_ANGLE = 45F;
     private const float CONE_LENGTH = 2F;
+    private const float COOLDOWN = 0.75F;
     
     protected override async UniTask ExecuteSpellAsync(CancellationToken cancellationToken)
     {
+        SetCooldown(COOLDOWN);
+        
         var owner = GetOwner();
         var position = owner.transform.position;
         var direction = owner.transform.forward;
