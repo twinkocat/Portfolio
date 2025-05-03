@@ -12,11 +12,13 @@ public class LevelRoot : MonoBehaviour
     [SerializeField] private Transform tilesContainer;
     
     private Player playerInstance;
+    private Enemy_Skeleton skeletonInstance;
     private UniTask generationTask;
     
     private void Start()
     {
         playerInstance = Game.Resolver.Resolve<Player>();
+        skeletonInstance = Game.Resolver.Resolve<Enemy_Skeleton>();
         GenerateLevel();
     }
 

@@ -16,7 +16,7 @@ public struct Hit
     
     public static Action<HitData> OnHitInvoke;
     
-    public float InvokeDamage()
+    public float InvokeHit()
     {
         var damage = CalculateDamage();
         

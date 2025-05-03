@@ -65,6 +65,7 @@ MonoBehaviour:
   autoInjectGameObjects:
   - {fileID: 3497127976700038295}
   playerPrefab: {fileID: 5246129069016287014, guid: f944fe7bcc24fc84cb40739e198beed8, type: 3}
+  skeletonPrefab: {fileID: 2632444898182839717, guid: 11345587065be8a4e99891a5c69d70de, type: 3}
 --- !u!114 &4920631834752550531
 MonoBehaviour:
   m_ObjectHideFlags: 0
