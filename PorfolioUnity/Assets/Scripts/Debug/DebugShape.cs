@@ -12,7 +12,7 @@ public class DebugShape : MonoBehaviour
     private void Awake()
     {
         Instance = this;
-        pool = new ObjectPool<RoundShape>(CreateRoundShape, OnGet, OnRelease, defaultCapacity: 20);
+        pool = new PortfolioObjectPool<RoundShape>(CreateRoundShape, OnGet, OnRelease, defaultCapacity: 5000);
     }
 
     public static void CreateCone(Vector3 position, Vector3 rotation, float angle, float length, float lifetime)

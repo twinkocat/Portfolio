@@ -34,7 +34,7 @@ public class LevelRoot : MonoBehaviour
         for (var i = 0; i < 50; i++)
         {
             Game.Resolver.Resolve<Enemy_Skeleton>().transform.position = playerInstance.Position + MathHelpers.GaussianPointInCircle(3F, 7.5F).GetX0Z();
-            await UniTask.Delay(TimeSpan.FromSeconds(1F));
+            await UniTask.Delay(TimeSpan.FromSeconds(0.2F));
         }
     }
   
