@@ -48,7 +48,7 @@ MonoBehaviour:
   m_Name: 
   m_EditorClassIdentifier: 
   allowTick: 0
-  damageableFlags: 4
+  targetFlags: 4
 --- !u!114 &4498832928742452283
 MonoBehaviour:
   m_ObjectHideFlags: 0

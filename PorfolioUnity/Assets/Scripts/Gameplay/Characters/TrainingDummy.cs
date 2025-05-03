@@ -9,8 +9,9 @@ public class TrainingDummy : Character
         healthAbility = GetComponent<HealthAbility>();
     }
 
-    public override void Damage(Hit hit)
+    public override void Hit(Hit hit)
     {
         var damage = hit.InvokeDamage();
+        healthAbility.UpdateHealth(-damage);
     }
 }

@@ -1,11 +1,11 @@
 ﻿using System;
 using UnityEngine;
 
-public interface IDamageable
+public interface ISpellTarget
 {
-    DamageableFlags DamageableFlags { get; }
+    TargetFlags Flags { get; }
     
-    void Damage(Hit hit);
+    void Hit(Hit hit);
 }
 
 [Serializable]
@@ -43,7 +43,7 @@ public struct HitData
 }
 
 [Flags]
-public enum DamageableFlags
+public enum TargetFlags
 {
     None = 0,
     Player = 1 << 0,

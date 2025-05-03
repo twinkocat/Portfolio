@@ -2,13 +2,14 @@
 using Cysharp.Threading.Tasks;
 using MyBox;
 using UnityEngine;
+using UnityEngine.Serialization;
 
-public abstract class Character : PoolableBehaviour, IDamageable
+public abstract class Character : PoolableBehaviour, ISpellTarget
 {
     [SerializeField] protected bool allowTick = true;
-    [SerializeField] private DamageableFlags damageableFlags;
+    [SerializeField] private TargetFlags targetFlags;
     
-    public DamageableFlags DamageableFlags => damageableFlags;
+    public TargetFlags Flags => targetFlags;
     
     private HashSet<CharacterAbility> characterAbilities;
     
@@ -62,7 +63,7 @@ public abstract class Character : PoolableBehaviour, IDamageable
     {
     }
 
-    public virtual void Damage(Hit hit)
+    public virtual void Hit(Hit hit)
     {
     }
 }

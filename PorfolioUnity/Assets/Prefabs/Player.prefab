@@ -15,6 +15,7 @@ GameObject:
   - component: {fileID: 1585914631115816384}
   - component: {fileID: 6129952632183161529}
   - component: {fileID: 4933779826504491256}
+  - component: {fileID: 3527017700616037428}
   m_Layer: 0
   m_Name: Player
   m_TagString: Player
@@ -102,9 +103,12 @@ MonoBehaviour:
   m_Name: 
   m_EditorClassIdentifier: 
   allowTick: 1
-  damageableFlags: 0
+  targetFlags: 0
   moveAction: {fileID: -1680190386980627800, guid: 052faaac586de48259a63d0c4782560b, type: 3}
   dashAction: {fileID: -7471211009204490832, guid: 052faaac586de48259a63d0c4782560b, type: 3}
+  firstAbilityAction: {fileID: -4979926249023469604, guid: 052faaac586de48259a63d0c4782560b, type: 3}
+  secondAbilityAction: {fileID: 6739099327242168884, guid: 052faaac586de48259a63d0c4782560b, type: 3}
+  ultimateAbilityAction: {fileID: -3239457583978936022, guid: 052faaac586de48259a63d0c4782560b, type: 3}
 --- !u!114 &1585914631115816384
 MonoBehaviour:
   m_ObjectHideFlags: 0
@@ -178,6 +182,19 @@ MonoBehaviour:
   m_EditorClassIdentifier: 
   health: 0
   maxHealth: 100
+--- !u!114 &3527017700616037428
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 5640942219778293785}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 29b1e47846dc492ea9cbb78e275937e4, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: 
+  animator: {fileID: 1985719287078248088}
 --- !u!1 &7505881189770975669
 GameObject:
   m_ObjectHideFlags: 0

@@ -1,33 +1,66 @@
-﻿using System;
-using Cysharp.Threading.Tasks;
+﻿using Cysharp.Threading.Tasks;
 using UnityEngine;
 using UnityEngine.InputSystem;
 
 public class Player : Character
 {
+    private const string WARRIOR_SLASH = "WARRIOR_SLASH";
+    private const string WARRIOR_SMASH = "WARRIOR_SMASH";
+    private const string WARRIOR_EARTH_SHATTER = "WARRIOR_EARTH_SHATTER";
+    
     [SerializeField] private InputActionReference moveAction;
     [SerializeField] private InputActionReference dashAction;
-
+    [SerializeField] private InputActionReference firstAbilityAction;
+    [SerializeField] private InputActionReference secondAbilityAction;
+    [SerializeField] private InputActionReference ultimateAbilityAction;
+    
+    
     private MovementAbility movementAbility;
     private DashAbility dashAbility;
     private HealthAbility healthAbility;
-
+    private SpellsAbility spellsAbility;
+    
     protected override void Create()
     {
         dashAbility = GetComponent<DashAbility>();
         movementAbility = GetComponent<MovementAbility>();
         healthAbility = GetComponent<HealthAbility>();
+        spellsAbility = GetComponent<SpellsAbility>();
     }
 
     protected override UniTask Init()
     {
         dashAction.action.started += Dash;
-        return base.PostInit();
+        firstAbilityAction.action.started += FirstAbility;
+        secondAbilityAction.action.started += SecondAbility;
+        ultimateAbilityAction.action.started += UltimateAbility;
+        
+        spellsAbility.BindAbility<Warrior_SlashSpellScript>(WARRIOR_SLASH);
+        spellsAbility.BindAbility<Warrior_SmashSpellScript>(WARRIOR_SMASH);
+        spellsAbility.BindAbility<Warrior_EarthShatterSpellScript>(WARRIOR_EARTH_SHATTER);
+        return base.Init();
     }
     
     private void Dash(InputAction.CallbackContext _)
     {
         dashAbility.Dash();
+    }
+    
+    private void FirstAbility(InputAction.CallbackContext _)
+    {
+        spellsAbility.CastSpell(WARRIOR_SLASH);
+    }
+    
+    private void SecondAbility(InputAction.CallbackContext _)
+    {
+        spellsAbility.CastSpell(WARRIOR_SMASH);
+
+    }
+    
+    private void UltimateAbility(InputAction.CallbackContext _)
+    {
+        spellsAbility.CastSpell(WARRIOR_EARTH_SHATTER);
+
     }
 
     protected override void Tick(float deltaTime)
@@ -37,11 +70,11 @@ public class Player : Character
         movementAbility.SetDestination(transform.position + input3D);
     }
 
-    public override void Damage(Hit hit)
+    public override void Hit(Hit hit)
     {
         var damage = hit.InvokeDamage();
         
-        if (!healthAbility.UpdateHealth(damage))
+        if (!healthAbility.UpdateHealth(-damage))
         {
             Debug.Log("Dead");    
         }
@@ -50,5 +83,8 @@ public class Player : Character
     public override void Dispose()
     {
         dashAction.action.started -= Dash;
+        firstAbilityAction.action.started -= FirstAbility;
+        secondAbilityAction.action.started -= SecondAbility;
+        ultimateAbilityAction.action.started -= UltimateAbility;
     }
 }
