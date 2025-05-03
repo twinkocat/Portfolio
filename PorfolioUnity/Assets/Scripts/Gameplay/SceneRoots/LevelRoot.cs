@@ -1,4 +1,6 @@
-﻿using Cysharp.Threading.Tasks;
+﻿using System;
+using System.Collections;
+using Cysharp.Threading.Tasks;
 using MyBox;
 using UnityEngine;
 using VContainer;
@@ -14,22 +16,28 @@ public class LevelRoot : MonoBehaviour
     private Player playerInstance;
     private Enemy_Skeleton skeletonInstance;
     private UniTask generationTask;
+    private UniTask spawnTask;
     
     private void Start()
     {
         playerInstance = Game.Resolver.Resolve<Player>();
-        Game.Resolver.Resolve<Enemy_Skeleton>().transform.position = MathHelpers.GaussianPointInCircle(2F, 5F).GetX0Z();
-        Game.Resolver.Resolve<Enemy_Skeleton>().transform.position = MathHelpers.GaussianPointInCircle(2F, 10F).GetX0Z();
-        Game.Resolver.Resolve<Enemy_Skeleton>().transform.position = MathHelpers.GaussianPointInCircle(2F, 7.5F).GetX0Z();
-        GenerateLevel();
+        generationTask = GenerateLevelAsync();
+        spawnTask = Spawn();
     }
 
-    [ButtonMethod]
-    private void GenerateLevel()
+    private async UniTask Spawn()
     {
-        generationTask = GenerateLevelAsync();
+        Game.Resolver.Resolve<Enemy_Skeleton>().transform.position = MathHelpers.GaussianPointInCircle(3F, 5F).GetX0Z();
+        Game.Resolver.Resolve<Enemy_Skeleton>().transform.position = MathHelpers.GaussianPointInCircle(3F, 10F).GetX0Z();
+        Game.Resolver.Resolve<Enemy_Skeleton>().transform.position = MathHelpers.GaussianPointInCircle(3F, 7.5F).GetX0Z();
+        
+        for (var i = 0; i < 50; i++)
+        {
+            Game.Resolver.Resolve<Enemy_Skeleton>().transform.position = playerInstance.Position + MathHelpers.GaussianPointInCircle(3F, 7.5F).GetX0Z();
+            await UniTask.Delay(TimeSpan.FromSeconds(1F));
+        }
     }
-    
+  
     private async UniTask GenerateLevelAsync()
     {
         tilesContainer.DestroyAllChildren();
