@@ -1,4 +1,5 @@
-﻿using Cysharp.Threading.Tasks;
+﻿using System;
+using Cysharp.Threading.Tasks;
 
 public class Enemy_Skeleton : Character
 {
@@ -10,6 +11,8 @@ public class Enemy_Skeleton : Character
     private HealthAbility healthAbility;
     private SpellsAbility spellsAbility;
     
+    private EStateMachine<SkeletonState> stateMachine;
+    
     protected override void Create()
     {
         movementAbility = GetComponent<MovementAbility>();
@@ -19,8 +22,16 @@ public class Enemy_Skeleton : Character
 
     protected override UniTask Init()
     {
+        stateMachine = new EStateMachine<SkeletonState>(SkeletonState.Idle);
         spellsAbility.BindAbility<Skeleton_Sacrifice>(SKELETON_SACRIFICE);
         return base.Init();
+    }
+
+    protected override async UniTask PostInit()
+    {
+        await UniTask.Delay(TimeSpan.FromSeconds(1F));
+        victim = FindFirstObjectByType<Player>();
+        stateMachine.ChangeState(victim ? SkeletonState.Pursuing : SkeletonState.Idle);
     }
 
     public override void OnGet()
@@ -29,11 +40,12 @@ public class Enemy_Skeleton : Character
 
     public override void OnRelease()
     {
+        stateMachine.ChangeState(SkeletonState.Idle);
     }
 
     protected override void Tick(float deltaTime)
     {
-        if (!victim)
+        if (!victim || !stateMachine.IsState(SkeletonState.Pursuing))
         {
             return;
         }
@@ -43,8 +55,36 @@ public class Enemy_Skeleton : Character
 
     public override void Hit(Hit hit)
     {
-        hit.InvokeHit();
-        healthAbility.UpdateHealth(-9999f);
-        spellsAbility.CastSpell(SKELETON_SACRIFICE);
+        if (stateMachine.IsState(SkeletonState.Dead))
+        {
+            return;
+        }
+        
+        var hitPoints = hit.InvokeHit();
+        var isDamage = hit.hitType is HitType.DirectDamage or HitType.DotDamage;
+        
+        if (isDamage)
+        {
+            movementAbility.StopMovement();
+            stateMachine.ChangeState(SkeletonState.Sacrificing);
+            spellsAbility.CastSpell(SKELETON_SACRIFICE);
+        }
+
+        healthAbility.UpdateHealth(isDamage ? -9999F : hitPoints);
+    }
+
+    public override void Die()
+    {
+        stateMachine.ChangeState(SkeletonState.Dead);
+        gameObject.SetActive(false);
+    }
+
+
+    private enum SkeletonState
+    {
+        Idle,
+        Pursuing,
+        Sacrificing,
+        Dead,
     }
 }

@@ -65,7 +65,7 @@ MonoBehaviour:
   m_EditorClassIdentifier: 
   animator: {fileID: 6937963610211942370}
   minMoveSpeed: 0.1
-  defaultMoveSpeed: 2
+  defaultMoveSpeed: 1.5
   maxMoveSpeed: 5
   rotationSpeed: 10
   defaultMoveAnimSpeed: 1

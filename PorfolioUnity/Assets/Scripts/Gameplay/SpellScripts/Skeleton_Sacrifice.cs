@@ -16,6 +16,8 @@ public class Skeleton_Sacrifice : SpellScript
         
         DebugShape.CreateCircle(position, AOE_RANGE, 1F);
         await ExecuteCircleSpell(position, AOE_RANGE,SPELL_FLAG);
+        
+        owner.Die();
     }
 
     protected override void OnHit(ISpellTarget target)

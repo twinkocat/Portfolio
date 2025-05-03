@@ -42,6 +42,11 @@ public class MovementAbility : CharacterAbility
         moveVector = vector;
     }
 
+    public void StopMovement()
+    {
+        moveVector = Vector3.zero;
+    }
+    
     public override void Tick(float deltaTime)
     {
         moveMagnitude = moveVector.magnitude;

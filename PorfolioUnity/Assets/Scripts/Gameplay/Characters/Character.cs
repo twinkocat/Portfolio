@@ -67,4 +67,6 @@ public abstract class Character : PoolableBehaviour, ISpellTarget
     public virtual void Hit(Hit hit)
     {
     }
+    
+    public virtual void Die() { }
 }

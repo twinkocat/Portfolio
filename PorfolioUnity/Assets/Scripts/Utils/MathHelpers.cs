@@ -1,6 +1,6 @@
 ﻿using UnityEngine;
 
-public class MathHelpers
+public static class MathHelpers
 {
     public static float GaussianRandom()
     {
@@ -21,4 +21,6 @@ public class MathHelpers
 
         return new Vector2(x, y);
     }
+    
+    public static Vector3 GetX0Z(this Vector2 target, float y = 0F) => new Vector3(target.x, y, target.y); 
 }

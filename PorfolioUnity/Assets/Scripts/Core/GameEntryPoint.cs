@@ -1,5 +1,4 @@
 using UnityEngine;
-using UnityEngine.SceneManagement;
 using VContainer;
 
 public class GameEntryPoint : MonoBehaviour
@@ -10,5 +9,12 @@ public class GameEntryPoint : MonoBehaviour
     private void Start()
     {
         Game.SetState<InitializationState>();
+
+        Hit.OnHitInvoke += OnHit;
+    }
+
+    private void OnHit(HitData hitData)
+    {
+        Debug.Log($"Hit: {hitData.hitPoints}");
     }
 }

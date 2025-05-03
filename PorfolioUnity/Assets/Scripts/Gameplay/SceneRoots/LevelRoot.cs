@@ -18,7 +18,9 @@ public class LevelRoot : MonoBehaviour
     private void Start()
     {
         playerInstance = Game.Resolver.Resolve<Player>();
-        skeletonInstance = Game.Resolver.Resolve<Enemy_Skeleton>();
+        Game.Resolver.Resolve<Enemy_Skeleton>().transform.position = MathHelpers.GaussianPointInCircle(2F, 5F).GetX0Z();
+        Game.Resolver.Resolve<Enemy_Skeleton>().transform.position = MathHelpers.GaussianPointInCircle(2F, 10F).GetX0Z();
+        Game.Resolver.Resolve<Enemy_Skeleton>().transform.position = MathHelpers.GaussianPointInCircle(2F, 7.5F).GetX0Z();
         GenerateLevel();
     }
 
