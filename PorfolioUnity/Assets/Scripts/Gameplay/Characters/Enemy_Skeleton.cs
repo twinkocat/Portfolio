@@ -1,5 +1,6 @@
 ﻿using System;
 using Cysharp.Threading.Tasks;
+using UnityEngine;
 
 public class Enemy_Skeleton : Character
 {
@@ -51,6 +52,13 @@ public class Enemy_Skeleton : Character
         }
         
         movementAbility.SetDestination(victim.transform.position);
+        
+        var inNear = Vector3.Distance(Position, victim.transform.position) < 0.25f;
+
+        if (inNear)
+        {
+            Sacrifice();
+        }
     }
 
     public override void Hit(Hit hit)
@@ -65,12 +73,17 @@ public class Enemy_Skeleton : Character
         
         if (isDamage)
         {
-            movementAbility.StopMovement();
-            stateMachine.ChangeState(SkeletonState.Sacrificing);
-            spellsAbility.CastSpell(SKELETON_SACRIFICE);
+            Sacrifice();
         }
 
         healthAbility.UpdateHealth(isDamage ? -9999F : hitPoints);
+    }
+
+    private void Sacrifice()
+    {
+        movementAbility.StopMovement();
+        stateMachine.ChangeState(SkeletonState.Sacrificing);
+        spellsAbility.CastSpell(SKELETON_SACRIFICE);
     }
 
     public override void Die()
