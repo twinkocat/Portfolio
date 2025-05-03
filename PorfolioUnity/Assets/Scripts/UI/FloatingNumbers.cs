@@ -1,5 +1,4 @@
 ﻿using UnityEngine;
-using UnityEngine.Pool;
 
 public class FloatingNumbers : MonoBehaviour
 {
@@ -9,7 +8,7 @@ public class FloatingNumbers : MonoBehaviour
 
     private void Awake()
     {
-        pool = new PortfolioObjectPool<Number>(CreateNumber, OnGet, OnRelease, defaultCapacity: 5000);
+        pool = new ObjectPool<Number>(CreateNumber, OnGet, OnRelease, defaultCapacity: 5000);
         Hit.OnHitInvoke += OnHit;
     }
 
@@ -24,10 +23,16 @@ public class FloatingNumbers : MonoBehaviour
 
     private void OnDestroy()
     {
-        Hit.OnHitInvoke += OnHit;
+        Hit.OnHitInvoke -= OnHit;
     }
     
-    private Number CreateNumber() => Instantiate(numberPrefab, transform);
+    private Number CreateNumber()
+    {
+        var number = Instantiate(numberPrefab, transform);
+        number.gameObject.SetActive(false);
+        return number;
+    }
+
     private void ReleaseNumber(Number number) => pool.Release(number);
     private static void OnRelease(Number number) => number.gameObject.SetActive(false);
     private static void OnGet(Number number) => number.gameObject.SetActive(true);

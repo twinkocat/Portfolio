@@ -1,5 +1,4 @@
 ﻿using UnityEngine;
-using UnityEngine.Pool;
 
 public class DebugShape : MonoBehaviour
 {
@@ -12,7 +11,7 @@ public class DebugShape : MonoBehaviour
     private void Awake()
     {
         Instance = this;
-        pool = new PortfolioObjectPool<RoundShape>(CreateRoundShape, OnGet, OnRelease, defaultCapacity: 5000);
+        pool = new ObjectPool<RoundShape>(CreateRoundShape, OnGet, OnRelease, defaultCapacity: 1000);
     }
 
     public static void CreateCone(Vector3 position, Vector3 rotation, float angle, float length, float lifetime)
@@ -27,7 +26,13 @@ public class DebugShape : MonoBehaviour
         shape.AdjustSettings(ReleaseCallback, position, Vector3.zero, 360, radius, lifetime);
     }
     
-    private static RoundShape CreateRoundShape() => Instantiate(Instance.roundShape, Instance.transform);
+    private static RoundShape CreateRoundShape()
+    {
+        var shape = Instantiate(Instance.roundShape, Instance.transform);
+        shape.gameObject.SetActive(false);
+        return shape;
+    }
+
     private static void OnGet(RoundShape shape) => shape.gameObject.SetActive(true);
     private static void OnRelease(RoundShape shape) => shape.gameObject.SetActive(false);
     private static void ReleaseCallback(RoundShape shape) => Instance.pool.Release(shape);
