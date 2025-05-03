@@ -1,4 +1,4 @@
-﻿using System;
+﻿using System.Threading;
 using Cysharp.Threading.Tasks;
 
 public class Warrior_SlashSpellScript : SpellScript
@@ -7,10 +7,8 @@ public class Warrior_SlashSpellScript : SpellScript
     private const float CONE_ANGLE = 45F;
     private const float CONE_LENGTH = 2F;
     
-    protected override async UniTask ExecuteSpellAsync()
+    protected override async UniTask ExecuteSpellAsync(CancellationToken cancellationToken)
     {
-        await UniTask.Yield(); // Animation Time
-
         var owner = GetOwner();
         var position = owner.transform.position;
         var direction = owner.transform.forward;

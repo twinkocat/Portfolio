@@ -1,15 +1,13 @@
-﻿using System;
+﻿using System.Threading;
 using Cysharp.Threading.Tasks;
 
 public class Warrior_EarthShatterSpellScript : SpellScript
 {
     private const TargetFlags DAMAGEABLE_FLAGS = TargetFlags.Enemy;
-    private const float RADIUS = 2F;
+    private const float RADIUS = 4F;
     
-    protected override async UniTask ExecuteSpellAsync()
+    protected override async UniTask ExecuteSpellAsync(CancellationToken cancellationToken)
     {
-        await UniTask.Yield();       
-
         var owner = GetOwner();
         var position = owner.transform.position;
         DebugShape.CreateCircle(position, RADIUS, 1F);

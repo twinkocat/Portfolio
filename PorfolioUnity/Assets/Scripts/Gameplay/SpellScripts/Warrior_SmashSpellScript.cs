@@ -1,4 +1,4 @@
-﻿using System;
+﻿using System.Threading;
 using Cysharp.Threading.Tasks;
 
 public class Warrior_SmashSpellScript : SpellScript
@@ -6,10 +6,8 @@ public class Warrior_SmashSpellScript : SpellScript
     private const TargetFlags DAMAGEABLE_FLAGS = TargetFlags.Enemy;
     private const float RADIUS = 2F;
     
-    protected override async UniTask ExecuteSpellAsync()
+    protected override async UniTask ExecuteSpellAsync(CancellationToken cancellationToken)
     {
-        await UniTask.Yield(); // Animation Time
-     
         var owner = GetOwner();
         var position = owner.transform.position;
         DebugShape.CreateCircle(position, RADIUS, 1F);

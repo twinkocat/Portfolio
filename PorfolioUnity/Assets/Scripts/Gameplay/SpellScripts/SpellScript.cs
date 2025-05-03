@@ -11,13 +11,18 @@ public abstract class SpellScript
     private CancellationTokenSource tokenSource; 
     private UniTask executeTask;
     private Character owner;
+    private Animator animator;
     
-    public void Init(Character spellOwner) => owner = spellOwner;
-    
+    public void Init(Character spellOwner, Animator ownerAnimator)
+    {
+        owner = spellOwner;
+        animator = ownerAnimator;
+    }
+
     public void Execute()
     {
         tokenSource = new CancellationTokenSource();
-        executeTask = UniTask.RunOnThreadPool(ExecuteSpellAsync, false, tokenSource.Token);
+        executeTask = UniTask.Create(ExecuteSpellAsync, tokenSource.Token);
     }
 
     public void Cancel()
@@ -25,7 +30,7 @@ public abstract class SpellScript
         tokenSource.Cancel();
     }
     
-    protected abstract UniTask ExecuteSpellAsync();
+    protected abstract UniTask ExecuteSpellAsync(CancellationToken cancellationToken);
     
     protected virtual void OnHit(ISpellTarget target) { }
     

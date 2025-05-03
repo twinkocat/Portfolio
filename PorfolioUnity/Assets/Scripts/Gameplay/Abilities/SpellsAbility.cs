@@ -6,16 +6,11 @@ public class SpellsAbility : CharacterAbility
 {
     [SerializeField] private Animator animator;
     
-    private readonly Dictionary<string, Func<SpellScript>> bindSpells = new();
+    private readonly Dictionary<string, Func<SpellScript>> spellBindings = new();
     
-    public override void Init()
-    {
-        
-    }
-
     public void CastSpell(string spellName)
     {
-        if (bindSpells.TryGetValue(spellName , out var spellFunc))
+        if (spellBindings.TryGetValue(spellName , out var spellFunc))
         {
             spellFunc().Execute();
         }        
@@ -23,22 +18,21 @@ public class SpellsAbility : CharacterAbility
 
     public void BindAbility<T>(string spellName) where T : SpellScript, new()
     {
-        bindSpells[spellName] = () =>
+        spellBindings[spellName] = () =>
         {
             var spell = new T();
-            spell.Init(GetOwner());
+            spell.Init(GetOwner(), animator);
             return spell;
         };
     }
-
-
+    
     public void UnbindAbility(string spellName)
     {
-        bindSpells.Remove(spellName);
+        spellBindings.Remove(spellName);
     }
 
     public void UnbindAllAbilities()
     {
-        bindSpells.Clear();
+        spellBindings.Clear();
     }
 }
