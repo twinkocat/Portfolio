@@ -21,9 +21,11 @@ public class Warrior_SlashSpellScript : SpellScript
     {
         var damage = CalculateDamage(1F, 10F);
 
-        target.Hit(new Hit()
+        target.Hit(new Hit
         {
-            rawDamage = damage,
+            rawHit = damage,
+            hitType = HitType.DirectDamage,
+            hitPosition = target.Position,
         });
     }
 

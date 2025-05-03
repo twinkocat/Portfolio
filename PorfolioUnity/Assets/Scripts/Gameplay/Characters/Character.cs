@@ -10,7 +10,8 @@ public abstract class Character : PoolableBehaviour, ISpellTarget
     [SerializeField] private TargetFlags targetFlags;
     
     public TargetFlags Flags => targetFlags;
-    
+    public Vector3 Position => transform.position;
+
     private HashSet<CharacterAbility> characterAbilities;
     
     private void Awake()

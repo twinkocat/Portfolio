@@ -11,7 +11,7 @@ public class TrainingDummy : Character
 
     public override void Hit(Hit hit)
     {
-        var damage = hit.InvokeHit();
-        healthAbility.UpdateHealth(-damage);
+        var hitPoints = hit.InvokeHit();
+        healthAbility.UpdateHealth(hitPoints);
     }
 }

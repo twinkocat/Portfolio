@@ -72,9 +72,8 @@ public class Player : Character
 
     public override void Hit(Hit hit)
     {
-        var damage = hit.InvokeHit();
-        
-        if (!healthAbility.UpdateHealth(-damage))
+        var hitPoints = hit.InvokeHit();
+        if (!healthAbility.UpdateHealth(hitPoints))
         {
             Debug.Log("Dead");    
         }

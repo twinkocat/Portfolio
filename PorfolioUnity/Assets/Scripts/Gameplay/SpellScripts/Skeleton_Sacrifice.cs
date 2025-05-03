@@ -5,7 +5,7 @@ using Cysharp.Threading.Tasks;
 public class Skeleton_Sacrifice : SpellScript
 {
     private const float AOE_RANGE = 1.5F;
-    private const TargetFlags SPELL_FLAG = TargetFlags.Player | TargetFlags.Enemy;
+    private const TargetFlags SPELL_FLAG = TargetFlags.Player & TargetFlags.Enemy;
     
     protected override async UniTask ExecuteSpellAsync(CancellationToken cancellationToken)
     {
@@ -20,9 +20,18 @@ public class Skeleton_Sacrifice : SpellScript
 
     protected override void OnHit(ISpellTarget target)
     {
+        var owner = GetOwner();
+        
+        if (owner.Equals(target))
+        {
+            return;
+        }
+        
         target.Hit(new Hit
         {
-            rawDamage = target.Flags == TargetFlags.Player ? CalculateDamage() : -CalculateHealing()
+            rawHit = target.Flags.HasFlag(TargetFlags.Player) ? CalculateDamage() : CalculateHealing(),
+            hitPosition = target.Position,
+            hitType = target.Flags.HasFlag(TargetFlags.Player) ? HitType.DirectDamage : HitType.DirectHeal,
         });
     }
 

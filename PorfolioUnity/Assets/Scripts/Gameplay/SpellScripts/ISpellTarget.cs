@@ -1,45 +1,63 @@
 ﻿using System;
 using UnityEngine;
+using UnityEngine.Serialization;
 
 public interface ISpellTarget
 {
     TargetFlags Flags { get; }
-    
+    Vector3 Position { get; }
     void Hit(Hit hit);
 }
 
 [Serializable]
 public struct Hit
 {
-    public float rawDamage;
+    public float rawHit;
+    public HitType hitType;
     public Vector3 hitPosition;
     
     public static Action<HitData> OnHitInvoke;
     
     public float InvokeHit()
     {
-        var damage = CalculateDamage();
+        var hitPoints = CalculateHit();
         
         OnHitInvoke?.Invoke(new HitData
         {
-            damage = damage,
+            hitPoints = hitPoints,
             position = hitPosition,
+            hitType = hitType,
         });
 
-        return damage;
+        return hitPoints;
     }
 
-    private float CalculateDamage()
+    private float CalculateHit()
     {
-        return rawDamage;
+        return hitType switch
+        {
+            HitType.DirectDamage or HitType.DotDamage => -rawHit,
+            HitType.DirectHeal or HitType.DotHeal => rawHit,
+            _ => throw new ArgumentOutOfRangeException()
+        };
     }
 }
 
 [Serializable]
 public struct HitData
 {
-    public float damage;
+    public float hitPoints;
+    public HitType hitType;
     public Vector3 position;
+}
+
+public enum HitType
+{
+    None = 0,
+    DirectDamage,
+    DotDamage,
+    DirectHeal,
+    DotHeal,
 }
 
 [Flags]

@@ -103,7 +103,7 @@ MonoBehaviour:
   m_Name: 
   m_EditorClassIdentifier: 
   allowTick: 1
-  targetFlags: 0
+  targetFlags: 1
   moveAction: {fileID: -1680190386980627800, guid: 052faaac586de48259a63d0c4782560b, type: 3}
   dashAction: {fileID: -7471211009204490832, guid: 052faaac586de48259a63d0c4782560b, type: 3}
   firstAbilityAction: {fileID: -4979926249023469604, guid: 052faaac586de48259a63d0c4782560b, type: 3}

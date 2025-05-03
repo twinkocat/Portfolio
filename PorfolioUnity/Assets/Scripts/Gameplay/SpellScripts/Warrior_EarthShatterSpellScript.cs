@@ -20,7 +20,9 @@ public class Warrior_EarthShatterSpellScript : SpellScript
         
         target.Hit(new Hit()
         {
-            rawDamage = damage,
+            rawHit = damage,
+            hitType = HitType.DirectDamage,
+            hitPosition = target.Position,
         });
     }
 
