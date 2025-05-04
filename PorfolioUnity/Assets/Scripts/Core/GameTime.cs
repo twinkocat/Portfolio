@@ -6,10 +6,10 @@ using UnityEngine;
 public class GameTime : IDisposable
 {
     private static readonly CancellationTokenSource DisposeCts = new();
-
-    public static void CreateCooldown(float seconds, Action<CooldownData> updateCallback = null, Action onComplete = null)
+    
+    public static void CreateCooldown(float seconds, Action<CooldownData> updateCallback = null, Action onComplete = null, CancellationToken ct = default)
     {
-        Cooldown(seconds, updateCallback, onComplete).Forget(); 
+        Cooldown(seconds, updateCallback, onComplete, ct).Forget(); 
     }
 
     private static async UniTaskVoid Cooldown(float seconds, Action<CooldownData> updateCallback = null, Action onComplete = null, CancellationToken ct = default)

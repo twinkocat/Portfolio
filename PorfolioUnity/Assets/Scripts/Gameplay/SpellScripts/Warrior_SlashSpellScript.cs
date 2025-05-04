@@ -1,7 +1,7 @@
 ﻿using System.Threading;
 using Cysharp.Threading.Tasks;
 
-public class Warrior_SlashSpellScript : SpellScript
+public class Warrior_SlashSpellScript : PlayerSpellScript
 {
     private const TargetFlags DAMAGEABLE_FLAGS = TargetFlags.Enemy;
     private const float CONE_ANGLE = 45F;
@@ -36,4 +36,6 @@ public class Warrior_SlashSpellScript : SpellScript
     {
         return 5F * levelMod + attackPower;
     }
+    
+    protected override int GetSpellViewIndex() { return 0; }
 }

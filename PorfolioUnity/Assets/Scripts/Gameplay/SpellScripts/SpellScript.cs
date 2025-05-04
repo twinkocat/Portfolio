@@ -7,15 +7,14 @@ using UnityEngine;
 [Serializable]
 public abstract class SpellScript
 {
+    public virtual bool CanExecute => true;
     public bool Done => executeTask.Status is not UniTaskStatus.Pending;
-    public bool OnCooldown => OnCooldownList.Contains(name);
     
     private CancellationTokenSource tokenSource; 
     private UniTask executeTask;
     private Character owner;
     private Animator animator;
     private string name;
-    private static readonly List<string> OnCooldownList = new();
 
     public void Init(Character spellOwner, Animator ownerAnimator, string spellName)
     {
@@ -26,10 +25,11 @@ public abstract class SpellScript
 
     public void Execute()
     {
-        if (OnCooldown)
+        if (!CanExecute)
         {
             return;
         }
+        PreExecute();
         tokenSource = owner.DestroyCTS;
         executeTask = UniTask.Create(ExecuteSpellAsync, tokenSource.Token);
     }
@@ -39,35 +39,22 @@ public abstract class SpellScript
         tokenSource.Cancel();
     }
     
+    protected virtual void PreExecute() { }
     protected abstract UniTask ExecuteSpellAsync(CancellationToken cancellationToken);
     
     protected virtual void OnHit(ISpellTarget target) { }
-
-    protected Animator GetAnimator()
-    {
-        return animator;
-    }
     
-    protected Character GetOwner()
-    {
-        return owner;
-    }
+    protected Animator GetAnimator() { return animator; }
+    
+    protected Character GetOwner() { return owner; }
+    
+    protected string GetName() { return name; }
     
     protected TOwner GetOwner<TOwner>(bool throwException = false) where TOwner : Character
     {
         var tOwner = owner as TOwner;
         
         return tOwner || !throwException ? tOwner : throw new NullReferenceException();
-    }
-
-    protected void SetCooldown(float seconds, Action<CooldownData> callback = null, Action onComplete = null)
-    {
-        GameTime.CreateCooldown(seconds, callback, () =>
-        {
-            OnCooldownList.Remove(name);
-            onComplete?.Invoke();
-        });
-        OnCooldownList.Add(name);
     }
     
     protected async UniTask ExecuteConeSpell(Vector3 position, Vector3 direction, float lenght, float angle, TargetFlags flags)
@@ -100,7 +87,7 @@ public abstract class SpellScript
     private static async UniTask ExecuteCircleSpell_Internal(Vector3 position, float radius, TargetFlags flags, Action<ISpellTarget> onHitCallback = null)
     {
         var circleResult = OverlapPool.Instance.Get();
-        var count = SphereOverlap(position, radius, circleResult);
+        var count = Physics.OverlapSphereNonAlloc(position, radius, circleResult);
 
         for (var i = 0; i < count; i++)
         {
@@ -136,11 +123,6 @@ public abstract class SpellScript
         OverlapPool.Instance.Release(overlapResult);
 
         return j;
-    }
-    
-    private static int SphereOverlap(Vector3 position, float radius, Collider[] results)
-    {
-        return Physics.OverlapSphereNonAlloc(position, radius, results);
     }
 
     public static T Create<T>(Character spellOwner, Animator ownerAnimator, string spellName) where T : SpellScript, new()

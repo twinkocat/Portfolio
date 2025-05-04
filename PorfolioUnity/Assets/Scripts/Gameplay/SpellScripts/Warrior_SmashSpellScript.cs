@@ -1,7 +1,7 @@
 ﻿using System.Threading;
 using Cysharp.Threading.Tasks;
 
-public class Warrior_SmashSpellScript : SpellScript
+public class Warrior_SmashSpellScript : PlayerSpellScript
 {
     private const TargetFlags DAMAGEABLE_FLAGS = TargetFlags.Enemy;
     private const float RADIUS = 2F;
@@ -33,4 +33,6 @@ public class Warrior_SmashSpellScript : SpellScript
     {
         return 2 * attackPower + 3 * levelMod;
     }
+    
+    protected override int GetSpellViewIndex() { return 1; }
 }
