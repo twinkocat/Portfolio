@@ -8,6 +8,7 @@ public class HubRoot : MonoBehaviour
     private void Start()
     {
         playerInstance = Game.Resolver.Resolve<Player>();
+        Game.OnPlayerSpawn?.Invoke(playerInstance);
     }
 
     public void StartGame()

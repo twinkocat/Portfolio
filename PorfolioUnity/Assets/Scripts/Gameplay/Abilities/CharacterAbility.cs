@@ -2,7 +2,7 @@
 using UnityEngine;
 
 [RequireComponent(typeof(Character))]
-public abstract class CharacterAbility : MonoBehaviour
+public abstract class CharacterAbility : MonoBehaviour, IDisposable
 {
     private Character owner;
 
@@ -43,5 +43,9 @@ public abstract class CharacterAbility : MonoBehaviour
         var tOwner = owner as TOwner;
         
         return tOwner || !throwException ? tOwner : throw new NullReferenceException();
+    }
+
+    public virtual void Dispose()
+    {
     }
 }

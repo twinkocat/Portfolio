@@ -6,6 +6,8 @@ using Cysharp.Threading.Tasks;
 
 public class Game : IDisposable
 {
+    public static Action<Player> OnPlayerSpawn;
+    
     private static Game _instance;
     private readonly GameStateController stateController;
     

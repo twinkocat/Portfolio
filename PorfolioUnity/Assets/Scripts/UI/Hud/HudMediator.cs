@@ -3,8 +3,19 @@
     public override void Start()
     {
         PlayerSpellScript.OnCooldownUpdated += OnCooldownUpdated;
+        Game.OnPlayerSpawn += PlayerSpawn;
 
     }
+
+    private void PlayerSpawn(Player player)
+    {
+        var ability = player.GetHealthAbility();
+
+        View.hpBar.SetValues(ability.Health.Value, ability.MaxHealth.Value);
+        ability.Health.PropertyChanged += View.hpBar.SetCurrentValue;
+        ability.MaxHealth.PropertyChanged += View.hpBar.SetMaxValue;
+    }
+    
 
     private void OnCooldownUpdated(int index, float value)
     {

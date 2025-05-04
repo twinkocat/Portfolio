@@ -2,7 +2,7 @@
 using UnityEngine;
 using UnityEngine.InputSystem;
 
-public class Player : Character
+public class Player : Character, IHealthAbility
 {
     private const string WARRIOR_CHARGE = "WARRIOR_CHARGE";
     private const string WARRIOR_SLASH = "WARRIOR_SLASH";
@@ -86,5 +86,10 @@ public class Player : Character
         firstAbilityAction.action.started -= FirstAbility;
         secondAbilityAction.action.started -= SecondAbility;
         ultimateAbilityAction.action.started -= UltimateAbility;
+    }
+
+    public HealthAbility GetHealthAbility()
+    {
+        return healthAbility;
     }
 }

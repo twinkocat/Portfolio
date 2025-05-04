@@ -3,31 +3,39 @@ using UnityEngine;
 
 public class HealthAbility : CharacterAbility
 {
-    [SerializeField] private float health;
-    [SerializeField] private float maxHealth;
+    [SerializeField] private ReactiveProperty<float> health;
+    [SerializeField] private ReactiveProperty<float> maxHealth;
 
+    public ReactiveProperty<float> Health => health;
+    public ReactiveProperty<float> MaxHealth => maxHealth;
 
     public override void Init()
     {
-        health = maxHealth;
+        health.Value = maxHealth.Value;
     }
 
     public void SetMaxHealth(float newMaxHealth, HealthSetMod mod = HealthSetMod.Default)
     {
-        maxHealth = newMaxHealth;
-        health = mod switch
+        maxHealth.Value = newMaxHealth;
+        health.Value = mod switch
         {
-            HealthSetMod.Default => health,
-            HealthSetMod.Adjust => health * (maxHealth / newMaxHealth),
-            HealthSetMod.Regenerate => maxHealth,
+            HealthSetMod.Default => health.Value,
+            HealthSetMod.Adjust => health.Value * (maxHealth.Value / newMaxHealth),
+            HealthSetMod.Regenerate => maxHealth.Value,
             _ => throw new ArgumentOutOfRangeException()
         };
     }
 
     public bool UpdateHealth(float deltaHealth)
     {
-        health = Mathf.Clamp(health + deltaHealth, 0, maxHealth);
-        return health != 0;
+        health.Value = Mathf.Clamp(health.Value + deltaHealth, 0, maxHealth.Value);
+        return health.Value != 0;
+    }
+
+    public override void Dispose()
+    {
+        health.Dispose();
+        maxHealth.Dispose();
     }
 }
 
@@ -37,4 +45,10 @@ public enum HealthSetMod
     Default,
     Adjust,
     Regenerate,
+}
+
+
+public interface IHealthAbility
+{
+    HealthAbility GetHealthAbility();
 }

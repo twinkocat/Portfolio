@@ -21,22 +21,22 @@ public class LevelRoot : MonoBehaviour
     private void Start()
     {
         playerInstance = Game.Resolver.Resolve<Player>();
+        Game.OnPlayerSpawn?.Invoke(playerInstance);
         generationTask = GenerateLevelAsync();
         spawnTask = Spawn();
     }
 
-    private UniTask Spawn()
+    private async UniTask Spawn()
     {
-        // Game.Resolver.Resolve<Enemy_Skeleton>().transform.position = MathHelpers.GaussianPointInCircle(3F, 5F).GetX0Z();
-        // Game.Resolver.Resolve<Enemy_Skeleton>().transform.position = MathHelpers.GaussianPointInCircle(3F, 10F).GetX0Z();
-        // Game.Resolver.Resolve<Enemy_Skeleton>().transform.position = MathHelpers.GaussianPointInCircle(3F, 7.5F).GetX0Z();
-        //
-        // for (var i = 0; i < 50; i++)
-        // {
-        //     Game.Resolver.Resolve<Enemy_Skeleton>().transform.position = playerInstance.Position + MathHelpers.GaussianPointInCircle(3F, 7.5F).GetX0Z();
-        //     await UniTask.Delay(TimeSpan.FromSeconds(0.2F));
-        // }
-        return UniTask.CompletedTask;
+        Game.Resolver.Resolve<Enemy_Skeleton>().transform.position = MathHelpers.GaussianPointInCircle(3F, 5F).GetX0Z();
+        Game.Resolver.Resolve<Enemy_Skeleton>().transform.position = MathHelpers.GaussianPointInCircle(3F, 10F).GetX0Z();
+        Game.Resolver.Resolve<Enemy_Skeleton>().transform.position = MathHelpers.GaussianPointInCircle(3F, 7.5F).GetX0Z();
+        
+        for (var i = 0; i < 50; i++)
+        {
+            Game.Resolver.Resolve<Enemy_Skeleton>().transform.position = playerInstance.Position + MathHelpers.GaussianPointInCircle(3F, 7.5F).GetX0Z();
+            await UniTask.Delay(TimeSpan.FromSeconds(0.2F));
+        }
     }
   
     private async UniTask GenerateLevelAsync()

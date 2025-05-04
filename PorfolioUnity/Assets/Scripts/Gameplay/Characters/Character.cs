@@ -73,6 +73,7 @@ public abstract class Character : PoolableBehaviour, ISpellTarget
     public override void Dispose()
     {
         DestroyCTS.Cancel();
+        characterAbilities.ForEach(ability => ability.Dispose());
     }
 
     public virtual void Die() { }

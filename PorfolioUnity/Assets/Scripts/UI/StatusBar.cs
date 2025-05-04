@@ -1,10 +1,11 @@
-﻿using UnityEngine;
+﻿using TMPro;
+using UnityEngine;
 using UnityEngine.UI;
 
 public class StatusBar : MonoBehaviour
 {
     [SerializeField] private Slider slider;
-    [SerializeField] private Text text;
+    [SerializeField] private TMP_Text text;
 
     
     public void SetValues(float currentValue, float maxValue)
@@ -17,15 +18,17 @@ public class StatusBar : MonoBehaviour
     public void SetMaxValue(float maxValue)
     {
         slider.maxValue = maxValue;
+        UpdateText();
     }
     
     public void SetCurrentValue(float currentValue)
     {
         slider.value = currentValue;
+        UpdateText();
     }
 
     private void UpdateText()
     {
-        text.text = $"{slider.maxValue}/{slider.maxValue}";
+        text.text = $"{slider.value}/{slider.maxValue}";
     }
 }
