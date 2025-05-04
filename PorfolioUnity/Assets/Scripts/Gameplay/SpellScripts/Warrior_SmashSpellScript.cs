@@ -1,5 +1,6 @@
 ﻿using System.Threading;
 using Cysharp.Threading.Tasks;
+using UnityEngine;
 
 public class Warrior_SmashSpellScript : PlayerSpellScript
 {
@@ -13,7 +14,7 @@ public class Warrior_SmashSpellScript : PlayerSpellScript
         
         var owner = GetOwner();
         var position = owner.transform.position;
-        DebugShape.CreateCircle(position, RADIUS, 1F);
+        DebugShape.CreateCircle(position, RADIUS, 1F, Color.cyan);
         await ExecuteCircleSpell(position, RADIUS, DAMAGEABLE_FLAGS);
     }
 

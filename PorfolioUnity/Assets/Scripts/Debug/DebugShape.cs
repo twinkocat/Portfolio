@@ -14,16 +14,16 @@ public class DebugShape : MonoBehaviour
         pool = new ObjectPool<RoundShape>(CreateRoundShape, OnGet, OnRelease, defaultCapacity: 1000);
     }
 
-    public static void CreateCone(Vector3 position, Vector3 rotation, float angle, float length, float lifetime)
+    public static void CreateCone(Vector3 position, Vector3 rotation, float angle, float length, float lifetime, Color color)
     {
         var shape = Instance.pool.Get();
-        shape.AdjustSettings(ReleaseCallback, position, rotation, angle, length, lifetime);
+        shape.AdjustSettings(ReleaseCallback, position, rotation, angle, length, lifetime, color);
     }
 
-    public static void CreateCircle(Vector3 position, float radius, float lifetime)
+    public static void CreateCircle(Vector3 position, float radius, float lifetime, Color color)
     {
         var shape = Instance.pool.Get();
-        shape.AdjustSettings(ReleaseCallback, position, Vector3.zero, 360, radius, lifetime);
+        shape.AdjustSettings(ReleaseCallback, position, Vector3.zero, 360, radius, lifetime, color);
     }
     
     private static RoundShape CreateRoundShape()

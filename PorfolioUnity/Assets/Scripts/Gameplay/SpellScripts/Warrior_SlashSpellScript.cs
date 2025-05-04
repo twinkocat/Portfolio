@@ -1,5 +1,6 @@
 ﻿using System.Threading;
 using Cysharp.Threading.Tasks;
+using UnityEngine;
 
 public class Warrior_SlashSpellScript : PlayerSpellScript
 {
@@ -15,7 +16,7 @@ public class Warrior_SlashSpellScript : PlayerSpellScript
         var owner = GetOwner();
         var position = owner.transform.position;
         var direction = owner.transform.forward;
-        DebugShape.CreateCone(position, direction, CONE_ANGLE, CONE_LENGTH, 1F);
+        DebugShape.CreateCone(position, direction, CONE_ANGLE, CONE_LENGTH, 1F, Color.cyan);
         
         await ExecuteConeSpell(position, direction, CONE_LENGTH, CONE_ANGLE, DAMAGEABLE_FLAGS);
     }

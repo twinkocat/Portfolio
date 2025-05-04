@@ -1,6 +1,7 @@
 ﻿using System;
 using System.Threading;
 using Cysharp.Threading.Tasks;
+using UnityEngine;
 
 public class Skeleton_Sacrifice : SpellScript
 {
@@ -18,7 +19,7 @@ public class Skeleton_Sacrifice : SpellScript
         var owner = GetOwner();
         var position = owner.transform.position;
         
-        DebugShape.CreateCircle(position, AOE_RANGE, 1F);
+        DebugShape.CreateCircle(position, AOE_RANGE, 1F, Color.red);
         await ExecuteCircleSpell(position, AOE_RANGE,SPELL_FLAG);
         
         owner.Die();

@@ -9,9 +9,11 @@ public class RoundShape : MonoBehaviour
 
     private Action<RoundShape> callback;
     
-    public void AdjustSettings(Action<RoundShape> releaseCallback, Vector3 position, Vector3 rotation, float angle, float length, float lifetime)
+    public void AdjustSettings(Action<RoundShape> releaseCallback, Vector3 position, Vector3 rotation, float angle, float length, float lifetime, Color color)
     {
+        color.a = 0.7F;
         callback = releaseCallback;
+        meshRenderer.material.color = color;
         meshRenderer.material.SetFloat(AngleDeg, angle);
         transform.position = new Vector3(position.x, position.y + 0.005F, position.z);
         transform.rotation = rotation.sqrMagnitude > 0 ? Quaternion.LookRotation(rotation, Vector3.up) : Quaternion.identity;
