@@ -4,6 +4,7 @@ using UnityEngine.InputSystem;
 
 public class Player : Character
 {
+    private const string WARRIOR_CHARGE = "WARRIOR_CHARGE";
     private const string WARRIOR_SLASH = "WARRIOR_SLASH";
     private const string WARRIOR_SMASH = "WARRIOR_SMASH";
     private const string WARRIOR_EARTH_SHATTER = "WARRIOR_EARTH_SHATTER";
@@ -16,13 +17,11 @@ public class Player : Character
     
     
     private MovementAbility movementAbility;
-    private DashAbility dashAbility;
     private HealthAbility healthAbility;
     private SpellsAbility spellsAbility;
     
     protected override void Create()
     {
-        dashAbility = GetComponent<DashAbility>();
         movementAbility = GetComponent<MovementAbility>();
         healthAbility = GetComponent<HealthAbility>();
         spellsAbility = GetComponent<SpellsAbility>();
@@ -35,6 +34,7 @@ public class Player : Character
         secondAbilityAction.action.started += SecondAbility;
         ultimateAbilityAction.action.started += UltimateAbility;
         
+        spellsAbility.BindAbility<Warrior_ChargeSpellScript>(WARRIOR_CHARGE);
         spellsAbility.BindAbility<Warrior_SlashSpellScript>(WARRIOR_SLASH);
         spellsAbility.BindAbility<Warrior_SmashSpellScript>(WARRIOR_SMASH);
         spellsAbility.BindAbility<Warrior_EarthShatterSpellScript>(WARRIOR_EARTH_SHATTER);
@@ -43,7 +43,7 @@ public class Player : Character
     
     private void Dash(InputAction.CallbackContext _)
     {
-        dashAbility.Dash();
+        spellsAbility.CastSpell(WARRIOR_CHARGE);
     }
     
     private void FirstAbility(InputAction.CallbackContext _)
@@ -81,6 +81,7 @@ public class Player : Character
 
     public override void Dispose()
     {
+        base.Dispose();
         dashAction.action.started -= Dash;
         firstAbilityAction.action.started -= FirstAbility;
         secondAbilityAction.action.started -= SecondAbility;

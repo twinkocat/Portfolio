@@ -30,7 +30,7 @@ public abstract class SpellScript
         {
             return;
         }
-        tokenSource = new CancellationTokenSource();
+        tokenSource = owner.DestroyCTS;
         executeTask = UniTask.Create(ExecuteSpellAsync, tokenSource.Token);
     }
 
@@ -42,6 +42,11 @@ public abstract class SpellScript
     protected abstract UniTask ExecuteSpellAsync(CancellationToken cancellationToken);
     
     protected virtual void OnHit(ISpellTarget target) { }
+
+    protected Animator GetAnimator()
+    {
+        return animator;
+    }
     
     protected Character GetOwner()
     {

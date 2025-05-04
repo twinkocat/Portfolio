@@ -1,4 +1,5 @@
 ﻿using System.Collections.Generic;
+using System.Threading;
 using Cysharp.Threading.Tasks;
 using MyBox;
 using UnityEngine;
@@ -11,7 +12,8 @@ public abstract class Character : PoolableBehaviour, ISpellTarget
     
     public TargetFlags Flags => targetFlags;
     public Vector3 Position => transform.position;
-
+    public CancellationTokenSource DestroyCTS { get; } = new CancellationTokenSource();
+    
     private HashSet<CharacterAbility> characterAbilities;
     
     private void Awake()
@@ -67,6 +69,11 @@ public abstract class Character : PoolableBehaviour, ISpellTarget
     public virtual void Hit(Hit hit)
     {
     }
-    
+
+    public override void Dispose()
+    {
+        DestroyCTS.Cancel();
+    }
+
     public virtual void Die() { }
 }
