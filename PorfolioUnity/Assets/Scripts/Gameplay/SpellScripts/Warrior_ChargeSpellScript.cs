@@ -31,5 +31,5 @@ public class Warrior_ChargeSpellScript : PlayerSpellScript
         }
     }
 
-    protected override int GetSpellViewIndex() { return 3; }
+    protected override PlayerSpellType SpellViewIndex => PlayerSpellType.Dash;
 }

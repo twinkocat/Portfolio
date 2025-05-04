@@ -7,12 +7,12 @@ public class GameTime : IDisposable
 {
     private static readonly CancellationTokenSource DisposeCts = new();
     
-    public static void CreateCooldown(float seconds, Action<CooldownData> updateCallback = null, Action onComplete = null, CancellationToken ct = default)
+    public static void CreateTimer(float seconds, Action<TimerData> updateCallback = null, Action onComplete = null, CancellationToken ct = default)
     {
-        Cooldown(seconds, updateCallback, onComplete, ct).Forget(); 
+        Timer(seconds, updateCallback, onComplete, ct).Forget(); 
     }
 
-    private static async UniTaskVoid Cooldown(float seconds, Action<CooldownData> updateCallback = null, Action onComplete = null, CancellationToken ct = default)
+    private static async UniTaskVoid Timer(float seconds, Action<TimerData> updateCallback = null, Action onComplete = null, CancellationToken ct = default)
     {
         for (var time = 0F; time < seconds; time += Time.deltaTime)
         {
@@ -23,10 +23,10 @@ public class GameTime : IDisposable
             
             await UniTask.NextFrame();
 
-            var data = new CooldownData
+            var data = new TimerData
             {
                 passedTime = time,
-                cooldownTime = seconds,
+                timer = seconds,
             };
             
             updateCallback?.Invoke(data);
@@ -44,12 +44,12 @@ public class GameTime : IDisposable
 }
 
 [Serializable]
-public struct CooldownData
+public struct TimerData
 {
     public float passedTime;
-    public float cooldownTime;
+    public float timer;
     
-    public float GetNormalized() => Mathf.Clamp01(passedTime / cooldownTime);
+    public float GetNormalized() => Mathf.Clamp01(passedTime / timer);
     
     public float GetPercent() => GetNormalized() * 100f;
 }

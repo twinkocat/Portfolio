@@ -33,6 +33,6 @@ public class Warrior_SmashSpellScript : PlayerSpellScript
     {
         return 2 * attackPower + 3 * levelMod;
     }
-    
-    protected override int GetSpellViewIndex() { return 1; }
+
+    protected override PlayerSpellType SpellViewIndex => PlayerSpellType.Primary1;
 }

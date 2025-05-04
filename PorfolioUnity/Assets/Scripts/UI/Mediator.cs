@@ -1,4 +1,5 @@
-﻿using VContainer;
+﻿using System;
+using VContainer;
 using VContainer.Unity;
 
 public abstract class Mediator
@@ -6,7 +7,7 @@ public abstract class Mediator
     
 }
 
-public abstract class Mediator<T> : Mediator where T : View
+public abstract class Mediator<T> : Mediator, IStartable, IDisposable where T : View
 {
     [Inject] private UIRoot root;
     [Inject] private T prefab;
@@ -31,4 +32,6 @@ public abstract class Mediator<T> : Mediator where T : View
 
     public virtual void Show() => View.gameObject.SetActive(true);
     public virtual void Hide() => View.gameObject.SetActive(false);
+    public virtual void Start() { }
+    public virtual void Dispose() { }
 }

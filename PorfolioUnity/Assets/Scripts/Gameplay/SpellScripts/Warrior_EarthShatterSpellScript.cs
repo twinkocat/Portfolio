@@ -33,6 +33,6 @@ public class Warrior_EarthShatterSpellScript : PlayerSpellScript
     {
         return 2 * attackPower + 3 * levelMod;
     }
-    
-    protected override int GetSpellViewIndex() { return 2; }
+
+    protected override PlayerSpellType SpellViewIndex => PlayerSpellType.Ultimate;
 }

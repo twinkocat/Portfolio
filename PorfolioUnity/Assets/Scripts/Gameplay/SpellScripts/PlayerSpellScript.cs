@@ -1,38 +1,55 @@
-﻿using System.Collections.Generic;
-using VContainer;
+﻿using System;
+using System.Collections.Generic;
 
 public abstract class PlayerSpellScript : SpellScript
 {
+    public static Action<int, float> OnCooldownUpdated;
+    
     public override bool CanExecute => !OnCooldownList.Contains(GetName());
+    protected abstract PlayerSpellType SpellViewIndex { get; }
 
-    private SpellView spellView;
     private static readonly List<string> OnCooldownList = new();
 
-    protected override void PreExecute()
-    {
-        spellView = Game.Resolver.Resolve<HudMediator>()
-                                 .GetSpellView(GetSpellViewIndex());
-    }
-
+    
     protected void SetCooldown(float seconds)
     {
-        GameTime.CreateCooldown(seconds, OnCooldown, () =>
+        GameTime.CreateTimer(seconds, OnCooldown, () =>
         {
             OnCooldownList.Remove(GetName());
             OnCooldownEnd();
-        }, spellView.destroyCancellationToken);
+        });
+        
         OnCooldownList.Add(GetName());
     }
 
-    protected virtual void OnCooldown(CooldownData data)
+    protected virtual void OnCooldown(TimerData data)
     {
-        spellView.SetTimerNormalized(1 - data.GetNormalized());
+        OnCooldownUpdated?.Invoke(ToPlayerSpellInteger(SpellViewIndex), 1 - data.GetNormalized());
     }
 
     protected virtual void OnCooldownEnd()
     {
-        spellView.SetTimerNormalized(0);
+        OnCooldownUpdated?.Invoke(ToPlayerSpellInteger(SpellViewIndex), 0);
+
     }
     
-    protected virtual int GetSpellViewIndex() { return 0; }
+    private static int ToPlayerSpellInteger(PlayerSpellType spellType)
+    {
+        return spellType switch
+        {
+            PlayerSpellType.Primary0 => 0,
+            PlayerSpellType.Primary1 => 1,
+            PlayerSpellType.Ultimate => 2,
+            PlayerSpellType.Dash => 3,
+            _ => throw new ArgumentOutOfRangeException(nameof(spellType), spellType, null)
+        };
+    }
+}
+
+public enum PlayerSpellType
+{
+    Primary0 = 0,
+    Primary1 = 1,
+    Ultimate = 2,
+    Dash = 3,
 }
