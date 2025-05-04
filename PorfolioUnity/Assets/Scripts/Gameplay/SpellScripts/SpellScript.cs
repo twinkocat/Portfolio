@@ -29,7 +29,7 @@ public abstract class SpellScript
             return;
         }
         PreExecute();
-        tokenSource = owner.DestroyCTS;
+        tokenSource = CancellationTokenSource.CreateLinkedTokenSource(owner.DeadCTS.Token, owner.destroyCancellationToken);
         executeTask = UniTask.Create(ExecuteSpellAsync, tokenSource.Token);
     }
 

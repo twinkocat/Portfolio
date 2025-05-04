@@ -12,7 +12,7 @@ public abstract class Character : PoolableBehaviour, ISpellTarget
     
     public TargetFlags Flags => targetFlags;
     public Vector3 Position => transform.position;
-    public CancellationTokenSource DestroyCTS { get; } = new CancellationTokenSource();
+    public CancellationTokenSource DeadCTS { get; } = new CancellationTokenSource();
     
     private HashSet<CharacterAbility> characterAbilities;
     
@@ -70,11 +70,17 @@ public abstract class Character : PoolableBehaviour, ISpellTarget
     {
     }
 
-    public override void Dispose()
+    protected virtual void OnDie() { }
+
+    public void Die()
     {
-        DestroyCTS.Cancel();
-        characterAbilities.ForEach(ability => ability.Dispose());
+        OnDie();
+        DeadCTS.Cancel();
     }
 
-    public virtual void Die() { }
+    
+    public override void Dispose()
+    {
+        characterAbilities.ForEach(ability => ability.Dispose());
+    }
 }

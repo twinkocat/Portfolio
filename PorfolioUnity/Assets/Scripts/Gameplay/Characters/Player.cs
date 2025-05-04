@@ -34,10 +34,10 @@ public class Player : Character, IHealthAbility
         secondAbilityAction.action.started += SecondAbility;
         ultimateAbilityAction.action.started += UltimateAbility;
         
-        spellsAbility.BindAbility<Warrior_ChargeSpellScript>(WARRIOR_CHARGE);
-        spellsAbility.BindAbility<Warrior_SlashSpellScript>(WARRIOR_SLASH);
-        spellsAbility.BindAbility<Warrior_SmashSpellScript>(WARRIOR_SMASH);
-        spellsAbility.BindAbility<Warrior_EarthShatterSpellScript>(WARRIOR_EARTH_SHATTER);
+        spellsAbility.BindAbility<Warrior_Charge>(WARRIOR_CHARGE);
+        spellsAbility.BindAbility<Warrior_Slash>(WARRIOR_SLASH);
+        spellsAbility.BindAbility<Warrior_Smash>(WARRIOR_SMASH);
+        spellsAbility.BindAbility<Warrior_EarthShatter>(WARRIOR_EARTH_SHATTER);
         return base.Init();
     }
     

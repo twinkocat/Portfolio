@@ -2,11 +2,11 @@
 using Cysharp.Threading.Tasks;
 using UnityEngine;
 
-public class Warrior_EarthShatterSpellScript : PlayerSpellScript
+public class Warrior_Smash : PlayerSpellScript
 {
     private const TargetFlags DAMAGEABLE_FLAGS = TargetFlags.Enemy;
-    private const float RADIUS = 4F;
-    private const float COOLDOWN = 5F;
+    private const float RADIUS = 2F;
+    private const float COOLDOWN = 1.5F;
     
     protected override async UniTask ExecuteSpellAsync(CancellationToken cancellationToken)
     {
@@ -21,7 +21,7 @@ public class Warrior_EarthShatterSpellScript : PlayerSpellScript
     protected override void OnHit(ISpellTarget target)
     {
         var damage = CalculateDamage(1, 10);
-        
+
         target.Hit(new Hit()
         {
             rawHit = damage,
@@ -35,5 +35,5 @@ public class Warrior_EarthShatterSpellScript : PlayerSpellScript
         return 2 * attackPower + 3 * levelMod;
     }
 
-    protected override PlayerSpellType SpellViewIndex => PlayerSpellType.Ultimate;
+    protected override PlayerSpellType SpellViewIndex => PlayerSpellType.Primary1;
 }

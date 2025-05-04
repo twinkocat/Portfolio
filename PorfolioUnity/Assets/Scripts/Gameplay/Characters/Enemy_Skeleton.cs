@@ -86,7 +86,7 @@ public class Enemy_Skeleton : Character
         spellsAbility.CastSpell(SKELETON_SACRIFICE);
     }
 
-    public override void Die()
+    protected override void OnDie()
     {
         stateMachine.ChangeState(SkeletonState.Dead);
         gameObject.SetActive(false);

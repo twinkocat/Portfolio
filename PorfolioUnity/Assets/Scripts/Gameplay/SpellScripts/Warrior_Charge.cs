@@ -2,7 +2,7 @@
 using Cysharp.Threading.Tasks;
 using UnityEngine;
 
-public class Warrior_ChargeSpellScript : PlayerSpellScript
+public class Warrior_Charge : PlayerSpellScript
 {
     private static readonly int DashTrigger = Animator.StringToHash("Dash");
 
