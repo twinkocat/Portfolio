@@ -5,6 +5,7 @@ using UnityEngine;
 public class Enemy_SkeletonWarrior : Character
 {
     private const string SKELETON_CHARGE = "SKELETON_CHARGE";
+    private const string SKELETON_SLASH = "SKELETON_SLASH";
     
     public Player Victim { get; private set; }
     public EStateMachine<SkeletonWarriorState> StateMachine { get; private set; }
@@ -24,6 +25,7 @@ public class Enemy_SkeletonWarrior : Character
     {
         StateMachine = new EStateMachine<SkeletonWarriorState>(SkeletonWarriorState.Idle);
         spellsAbility.BindAbility<SkeletonWarrior_SkeletonCharge>(SKELETON_CHARGE);
+        spellsAbility.BindAbility<SkeletonWarrior_Slash>(SKELETON_SLASH);
         return base.Init();
     }
 
@@ -69,7 +71,8 @@ public class Enemy_SkeletonWarrior : Character
     private void Attack()
     {
         movementAbility.StopMovement();
-        StateMachine.ChangeState(SkeletonWarriorState.Pursuing);
+        StateMachine.ChangeState(SkeletonWarriorState.Attacking);
+        spellsAbility.CastSpell(SKELETON_SLASH);
     }
     
     public override void Hit(Hit hit)
