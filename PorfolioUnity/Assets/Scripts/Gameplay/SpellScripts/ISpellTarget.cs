@@ -5,7 +5,7 @@ using UnityEngine.Serialization;
 public interface ISpellTarget
 {
     TargetFlags Flags { get; }
-    Vector3 Position { get; }
+    Transform Transform { get; }
     void Hit(Hit hit);
 }
 

@@ -2,7 +2,7 @@
 using UnityEngine;
 using UnityEngine.InputSystem;
 
-public class Player : Character, IHealthAbility
+public class Player : Character, IHealthAbility, ISpellCaster
 {
     private const string WARRIOR_CHARGE = "WARRIOR_CHARGE";
     private const string WARRIOR_SLASH = "WARRIOR_SLASH";
@@ -15,6 +15,7 @@ public class Player : Character, IHealthAbility
     [SerializeField] private InputActionReference secondAbilityAction;
     [SerializeField] private InputActionReference ultimateAbilityAction;
     
+    public ISpellTarget Victim => null;
     
     private MovementAbility movementAbility;
     private HealthAbility healthAbility;
@@ -91,5 +92,10 @@ public class Player : Character, IHealthAbility
     public HealthAbility GetHealthAbility()
     {
         return healthAbility;
+    }
+    
+    public SpellsAbility GetSpellsAbility()
+    {
+        return spellsAbility;
     }
 }

@@ -98,6 +98,12 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 29b1e47846dc492ea9cbb78e275937e4, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
+  attackPower:
+    m_value: 0
+  attackSpeed:
+    m_value: 0
+  levelMod:
+    m_value: 0
   animator: {fileID: 4163974027588204726}
 --- !u!136 &8848943859634934288
 CapsuleCollider:

@@ -38,11 +38,15 @@ public abstract class CharacterAbility : MonoBehaviour, IDisposable
         return owner;
     }
     
-    public TOwner GetOwner<TOwner>(bool throwException = false) where TOwner : Character
+    public TOwner GetOwner<TOwner>(bool throwException = false) where TOwner : class
     {
-        var tOwner = owner as TOwner;
+        if (owner is TOwner tOwner)
+            return tOwner;
         
-        return tOwner || !throwException ? tOwner : throw new NullReferenceException();
+        if (throwException)
+            throw new NullReferenceException();
+            
+        return null;
     }
 
     public virtual void Dispose()

@@ -2,7 +2,7 @@
 {
     public override void Start()
     {
-        PlayerSpellScript.OnCooldownUpdated += OnCooldownUpdated;
+        //PlayerSpellScript.OnCooldownUpdated += OnCooldownUpdated;
         Game.OnPlayerSpawn += PlayerSpawn;
 
     }
@@ -21,16 +21,7 @@
     {
         View.spellView[index].SetTimerNormalized(value);
     }
-
-    public StatusBar GetHealthStatusBar()
-    {
-        return View.hpBar;
-    }
     
-    public StatusBar GetEnergyStatusBar()
-    {
-        return View.resourceBar;
-    }
     
     public SpellView GetSpellView(int index)
     {
@@ -39,7 +30,7 @@
 
     public override void Dispose()
     {
-        PlayerSpellScript.OnCooldownUpdated -= OnCooldownUpdated;
+        //PlayerSpellScript.OnCooldownUpdated -= OnCooldownUpdated;
 
     }
 }

@@ -1,4 +1,5 @@
-﻿using UnityEngine;
+﻿using System;
+using UnityEngine;
 
 public class DebugShape : MonoBehaviour
 {
@@ -36,4 +37,11 @@ public class DebugShape : MonoBehaviour
     private static void OnGet(RoundShape shape) => shape.gameObject.SetActive(true);
     private static void OnRelease(RoundShape shape) => shape.gameObject.SetActive(false);
     private static void ReleaseCallback(RoundShape shape) => Instance.pool.Release(shape);
+}
+
+[Serializable]
+public struct DebugShapeData
+{
+    public Color color;
+    public float lifetime;
 }

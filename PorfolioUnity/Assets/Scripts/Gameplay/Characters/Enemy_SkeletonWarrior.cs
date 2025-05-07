@@ -1,13 +1,14 @@
 ﻿using System;
 using Cysharp.Threading.Tasks;
-using UnityEngine;
 
-public class Enemy_SkeletonWarrior : Character
+
+public class Enemy_SkeletonWarrior : Character, ISpellCaster
 {
     private const string SKELETON_CHARGE = "SKELETON_CHARGE";
-    private const string SKELETON_SLASH = "SKELETON_SLASH";
+    private const string SKELETON_SLASH_MELEE = "SKELETON_SLASH_MELEE";
+    private const string SKELETON_SLASH_AFTER_CHARGE = "SKELETON_SLASH_AFTER_CHARGE";
     
-    public Player Victim { get; private set; }
+    public ISpellTarget Victim { get; private set; }
     public EStateMachine<SkeletonWarriorState> StateMachine { get; private set; }
 
     private MovementAbility movementAbility;
@@ -24,8 +25,9 @@ public class Enemy_SkeletonWarrior : Character
     protected override UniTask Init()
     {
         StateMachine = new EStateMachine<SkeletonWarriorState>(SkeletonWarriorState.Idle);
-        spellsAbility.BindAbility<SkeletonWarrior_SkeletonCharge>(SKELETON_CHARGE);
-        spellsAbility.BindAbility<SkeletonWarrior_Slash>(SKELETON_SLASH);
+        spellsAbility.BindAbility<SkeletonWarrior_Charge>(SKELETON_CHARGE);
+        spellsAbility.BindAbility<SkeletonWarrior_SlashMelee>(SKELETON_SLASH_MELEE);
+        spellsAbility.BindAbility<SkeletonWarrior_SlashAfterCharge>(SKELETON_SLASH_AFTER_CHARGE);
         return base.Init();
     }
 
@@ -33,46 +35,54 @@ public class Enemy_SkeletonWarrior : Character
     {
         await UniTask.Delay(TimeSpan.FromSeconds(1F));
         Victim = FindFirstObjectByType<Player>();
-        StateMachine.ChangeState(Victim ? SkeletonWarriorState.Pursuing : SkeletonWarriorState.Idle);
+        StateMachine.ChangeState(Victim != null ? SkeletonWarriorState.Pursuing : SkeletonWarriorState.Idle);
     }
 
     protected override void Tick(float deltaTime)
     {
-        if (!Victim || !StateMachine.IsState(SkeletonWarriorState.Pursuing))
+        if (Victim == null || !StateMachine.IsState(SkeletonWarriorState.Pursuing))
         {
             return;
         }
         
-        movementAbility.SetDestination(Victim.Position);
-        
-        var distance = Vector3.Distance(Position, Victim.Position);
-        
-        var isValidToCharge = distance is > 1F and < 3F;
-        var isValidToAttack = distance < 0.25f;
-        
-        if (isValidToCharge)
-        {
-            Charge();
-        }
+        movementAbility.SetDestination(Victim.Transform.position);
+        TryCharge();
+    }
 
-        if (isValidToAttack)
+    private void TryCharge()
+    {
+        spellsAbility.CastSpell(SKELETON_CHARGE, Charge, () =>
         {
-            Attack();
-        }
+            Pursuing();
+            TryMeleeAttack();
+        }, AttackAfterCharge);
+    }
+
+    private void AttackAfterCharge()
+    {
+        spellsAbility.CastSpell(SKELETON_SLASH_AFTER_CHARGE, Attack, Pursuing, TryMeleeAttack);
     }
 
     private void Charge()
     {
-        movementAbility.StopMovement();
         StateMachine.ChangeState(SkeletonWarriorState.Charging);
-        spellsAbility.CastSpell(SKELETON_CHARGE);
+        movementAbility.StopMovement();
+    }
+
+    private void TryMeleeAttack()
+    {
+        spellsAbility.CastSpell(SKELETON_SLASH_MELEE, Attack, Pursuing, TryMeleeAttack);
     }
 
     private void Attack()
     {
         movementAbility.StopMovement();
         StateMachine.ChangeState(SkeletonWarriorState.Attacking);
-        spellsAbility.CastSpell(SKELETON_SLASH);
+    }
+
+    private void Pursuing()
+    {
+        StateMachine.ChangeState(SkeletonWarriorState.Pursuing);
     }
     
     public override void Hit(Hit hit)
@@ -96,6 +106,11 @@ public class Enemy_SkeletonWarrior : Character
         movementAbility.StopMovement();
         StateMachine.ChangeState(SkeletonWarriorState.Dead);
         gameObject.SetActive(false);
+    }
+
+    public SpellsAbility GetSpellsAbility()
+    {
+        return spellsAbility;
     }
 }
 

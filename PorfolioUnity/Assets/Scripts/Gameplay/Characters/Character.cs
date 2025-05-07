@@ -11,13 +11,16 @@ public abstract class Character : PoolableBehaviour, ISpellTarget
     [SerializeField] private TargetFlags targetFlags;
     
     public TargetFlags Flags => targetFlags;
-    public Vector3 Position => transform.position;
-    public CancellationTokenSource DeadCTS { get; } = new CancellationTokenSource();
+    public Transform Transform => transform;
+    public CancellationTokenSource DeadCTS { get; } = new();
+    public CancellationToken CancellationToken => linkedCTS.Token;
     
+    private CancellationTokenSource linkedCTS;
     private HashSet<CharacterAbility> characterAbilities;
     
     private void Awake()
     {
+        linkedCTS = CancellationTokenSource.CreateLinkedTokenSource(DeadCTS.Token, destroyCancellationToken);
         characterAbilities = new HashSet<CharacterAbility> (GetComponents<CharacterAbility>());
         Create(); 
         characterAbilities.ForEach(ability => ability.Create());
@@ -31,6 +34,8 @@ public abstract class Character : PoolableBehaviour, ISpellTarget
         await Init(); characterAbilities.ForEach(ability => ability.Init());
         await PostInit();
         allowTick = storedAllowTick;
+        
+        
     }
     
     protected virtual void Create() { }

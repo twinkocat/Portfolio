@@ -2,11 +2,12 @@
 using Cysharp.Threading.Tasks;
 using UnityEngine;
 
-public class Enemy_Skeleton : Character
+public class Enemy_Skeleton : Character, ISpellCaster
 {
     private const string SKELETON_SACRIFICE = "SKELETON_SACRIFICE";
     
-    private Player victim;
+    public ISpellTarget Victim { get; private set; }
+
     
     private MovementAbility movementAbility;
     private HealthAbility healthAbility;
@@ -31,8 +32,8 @@ public class Enemy_Skeleton : Character
     protected override async UniTask PostInit()
     {
         await UniTask.Delay(TimeSpan.FromSeconds(1F));
-        victim = FindFirstObjectByType<Player>();
-        stateMachine.ChangeState(victim ? SkeletonState.Pursuing : SkeletonState.Idle);
+        Victim = FindFirstObjectByType<Player>();
+        stateMachine.ChangeState(Victim != null ? SkeletonState.Pursuing : SkeletonState.Idle);
     }
 
     public override void OnGet()
@@ -46,14 +47,14 @@ public class Enemy_Skeleton : Character
 
     protected override void Tick(float deltaTime)
     {
-        if (!victim || !stateMachine.IsState(SkeletonState.Pursuing))
+        if (Victim == null || !stateMachine.IsState(SkeletonState.Pursuing))
         {
             return;
         }
         
-        movementAbility.SetDestination(victim.transform.position);
+        movementAbility.SetDestination(Victim.Transform.position);
         
-        var inNear = Vector3.Distance(Position, victim.transform.position) < 0.25f;
+        var inNear = Vector3.Distance(transform.position, Victim.Transform.position) < 0.25f;
 
         if (inNear)
         {
@@ -81,9 +82,17 @@ public class Enemy_Skeleton : Character
 
     private void Sacrifice()
     {
-        movementAbility.StopMovement();
-        stateMachine.ChangeState(SkeletonState.Sacrificing);
-        spellsAbility.CastSpell(SKELETON_SACRIFICE);
+        spellsAbility.CastSpell(SKELETON_SACRIFICE, 
+            () => // success 
+            {
+                stateMachine.ChangeState(SkeletonState.Sacrificing);
+                movementAbility.StopMovement();
+            }, 
+            () => // failure
+            {
+                stateMachine.ChangeState(SkeletonState.Pursuing);
+            }
+            , Die);
     }
 
     protected override void OnDie()
@@ -99,5 +108,10 @@ public class Enemy_Skeleton : Character
         Pursuing,
         Sacrificing,
         Dead,
+    }
+    
+    public SpellsAbility GetSpellsAbility()
+    {
+        return spellsAbility;
     }
 }
