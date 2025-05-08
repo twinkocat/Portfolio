@@ -1,7 +1,7 @@
 ﻿using MyBox;
 using UnityEngine;
 
-public class MovementAbility : CharacterAbility
+public class MovementComponent : CharacterComponent
 {
     private static readonly int MoveAnimSpeed = Animator.StringToHash("MoveAnimSpeed");
     private static readonly int MoveSpeed = Animator.StringToHash("MoveSpeed");

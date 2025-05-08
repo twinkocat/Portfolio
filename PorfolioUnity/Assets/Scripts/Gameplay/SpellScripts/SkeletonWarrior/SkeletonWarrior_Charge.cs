@@ -1,4 +1,5 @@
-﻿using System.Threading;
+﻿using System;
+using System.Threading;
 using Cysharp.Threading.Tasks;
 using UnityEngine;
 
@@ -6,6 +7,7 @@ public class SkeletonWarrior_Charge : ChargeSpellScript<SkeletonWarrior_ChargeDa
 {
     protected override async UniTask Activate(CancellationToken cancellationToken)
     {
+        await UniTask.Delay(TimeSpan.FromSeconds(data.castTime), cancellationToken: cancellationToken);
         var endPosition = GetOwner().Victim.Transform.position;
         await Charge_Internal(cancellationToken, endPosition);
     }

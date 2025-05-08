@@ -9,7 +9,7 @@
 
     private void PlayerSpawn(Player player)
     {
-        var ability = player.GetHealthAbility();
+        var ability = player.GetHealthComponent();
 
         View.hpBar.SetValues(ability.Health.Value, ability.MaxHealth.Value);
         ability.Health.PropertyChanged += View.hpBar.SetCurrentValue;

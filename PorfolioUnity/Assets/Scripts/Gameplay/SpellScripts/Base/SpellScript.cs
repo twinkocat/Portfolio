@@ -9,7 +9,7 @@ public abstract class SpellScript
 {
     private UniTask castTask;
     private ISpellCaster owner;
-    private SpellsAbility ownerAbility;
+    private SpellsComponent ownerComponent;
     
     public void Cast(Action successCallback, Action failCallback, Action castEndCallback)
     {
@@ -36,7 +36,7 @@ public abstract class SpellScript
     protected abstract UniTask Activate(CancellationToken cancellationToken);
     
     protected abstract void OnHit(ISpellTarget target);
-    protected SpellsAbility GetOwnerAbility() { return ownerAbility; }
+    protected SpellsComponent GetOwnerAbility() { return ownerComponent; }
     
     protected ISpellCaster GetOwner() { return owner; }
     
@@ -55,7 +55,7 @@ public abstract class SpellScript
     {
         var spellScript = Game.Resolver.Resolve<T>();
         spellScript.owner = spellCaster;
-        spellScript.ownerAbility = spellCaster.GetSpellsAbility();
+        spellScript.ownerComponent = spellCaster.GetSpellComponent();
         return spellScript;
     }
 }

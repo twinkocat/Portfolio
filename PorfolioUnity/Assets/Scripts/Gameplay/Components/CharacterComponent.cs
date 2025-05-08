@@ -2,7 +2,7 @@
 using UnityEngine;
 
 [RequireComponent(typeof(Character))]
-public abstract class CharacterAbility : MonoBehaviour, IDisposable
+public abstract class CharacterComponent : MonoBehaviour, IDisposable
 {
     private Character owner;
 

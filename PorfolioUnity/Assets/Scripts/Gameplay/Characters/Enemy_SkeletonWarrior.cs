@@ -11,23 +11,23 @@ public class Enemy_SkeletonWarrior : Character, ISpellCaster
     public ISpellTarget Victim { get; private set; }
     public EStateMachine<SkeletonWarriorState> StateMachine { get; private set; }
 
-    private MovementAbility movementAbility;
-    private HealthAbility healthAbility;
-    private SpellsAbility spellsAbility;
+    private MovementComponent movementComponent;
+    private HealthComponent healthComponent;
+    private SpellsComponent spellsComponent;
 
     protected override void Create()
     {
-        movementAbility = GetComponent<MovementAbility>();
-        healthAbility = GetComponent<HealthAbility>();
-        spellsAbility = GetComponent<SpellsAbility>();
+        movementComponent = GetComponent<MovementComponent>();
+        healthComponent = GetComponent<HealthComponent>();
+        spellsComponent = GetComponent<SpellsComponent>();
     }
 
     protected override UniTask Init()
     {
         StateMachine = new EStateMachine<SkeletonWarriorState>(SkeletonWarriorState.Idle);
-        spellsAbility.BindAbility<SkeletonWarrior_Charge>(SKELETON_CHARGE);
-        spellsAbility.BindAbility<SkeletonWarrior_SlashMelee>(SKELETON_SLASH_MELEE);
-        spellsAbility.BindAbility<SkeletonWarrior_SlashAfterCharge>(SKELETON_SLASH_AFTER_CHARGE);
+        spellsComponent.BindAbility<SkeletonWarrior_Charge>(SKELETON_CHARGE);
+        spellsComponent.BindAbility<SkeletonWarrior_SlashMelee>(SKELETON_SLASH_MELEE);
+        spellsComponent.BindAbility<SkeletonWarrior_SlashAfterCharge>(SKELETON_SLASH_AFTER_CHARGE);
         return base.Init();
     }
 
@@ -45,13 +45,13 @@ public class Enemy_SkeletonWarrior : Character, ISpellCaster
             return;
         }
         
-        movementAbility.SetDestination(Victim.Transform.position);
+        movementComponent.SetDestination(Victim.Transform.position);
         TryCharge();
     }
 
     private void TryCharge()
     {
-        spellsAbility.CastSpell(SKELETON_CHARGE, Charge, () =>
+        spellsComponent.CastSpell(SKELETON_CHARGE, Charge, () =>
         {
             Pursuing();
             TryMeleeAttack();
@@ -60,23 +60,23 @@ public class Enemy_SkeletonWarrior : Character, ISpellCaster
 
     private void AttackAfterCharge()
     {
-        spellsAbility.CastSpell(SKELETON_SLASH_AFTER_CHARGE, Attack, Pursuing, TryMeleeAttack);
+        spellsComponent.CastSpell(SKELETON_SLASH_AFTER_CHARGE, Attack, Pursuing, TryMeleeAttack);
     }
 
     private void Charge()
     {
         StateMachine.ChangeState(SkeletonWarriorState.Charging);
-        movementAbility.StopMovement();
+        movementComponent.StopMovement();
     }
 
     private void TryMeleeAttack()
     {
-        spellsAbility.CastSpell(SKELETON_SLASH_MELEE, Attack, Pursuing, TryMeleeAttack);
+        spellsComponent.CastSpell(SKELETON_SLASH_MELEE, Attack, Pursuing, TryMeleeAttack);
     }
 
     private void Attack()
     {
-        movementAbility.StopMovement();
+        movementComponent.StopMovement();
         StateMachine.ChangeState(SkeletonWarriorState.Attacking);
     }
 
@@ -93,7 +93,7 @@ public class Enemy_SkeletonWarrior : Character, ISpellCaster
         }
         
         var hitPoints = hit.InvokeHit();
-        var dead = !healthAbility.UpdateHealth(hitPoints);
+        var dead = !healthComponent.UpdateHealth(hitPoints);
 
         if (dead)
         {
@@ -103,14 +103,14 @@ public class Enemy_SkeletonWarrior : Character, ISpellCaster
 
     protected override void OnDie()
     {
-        movementAbility.StopMovement();
+        movementComponent.StopMovement();
         StateMachine.ChangeState(SkeletonWarriorState.Dead);
         gameObject.SetActive(false);
     }
 
-    public SpellsAbility GetSpellsAbility()
+    public SpellsComponent GetSpellComponent()
     {
-        return spellsAbility;
+        return spellsComponent;
     }
 }
 

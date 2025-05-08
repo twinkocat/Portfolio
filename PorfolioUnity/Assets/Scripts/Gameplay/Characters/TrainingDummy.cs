@@ -2,16 +2,16 @@
 
 public class TrainingDummy : Character
 {
-    private HealthAbility healthAbility;
+    private HealthComponent healthComponent;
 
     protected override void Create()
     {
-        healthAbility = GetComponent<HealthAbility>();
+        healthComponent = GetComponent<HealthComponent>();
     }
 
     public override void Hit(Hit hit)
     {
         var hitPoints = hit.InvokeHit();
-        healthAbility.UpdateHealth(hitPoints);
+        healthComponent.UpdateHealth(hitPoints);
     }
 }

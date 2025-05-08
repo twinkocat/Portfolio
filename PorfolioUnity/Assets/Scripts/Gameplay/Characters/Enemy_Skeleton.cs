@@ -9,23 +9,23 @@ public class Enemy_Skeleton : Character, ISpellCaster
     public ISpellTarget Victim { get; private set; }
 
     
-    private MovementAbility movementAbility;
-    private HealthAbility healthAbility;
-    private SpellsAbility spellsAbility;
+    private MovementComponent movementComponent;
+    private HealthComponent healthComponent;
+    private SpellsComponent spellsComponent;
     
     private EStateMachine<SkeletonState> stateMachine;
     
     protected override void Create()
     {
-        movementAbility = GetComponent<MovementAbility>();
-        healthAbility = GetComponent<HealthAbility>();
-        spellsAbility = GetComponent<SpellsAbility>();
+        movementComponent = GetComponent<MovementComponent>();
+        healthComponent = GetComponent<HealthComponent>();
+        spellsComponent = GetComponent<SpellsComponent>();
     }
 
     protected override UniTask Init()
     {
         stateMachine = new EStateMachine<SkeletonState>(SkeletonState.Idle);
-        spellsAbility.BindAbility<Skeleton_Sacrifice>(SKELETON_SACRIFICE);
+        spellsComponent.BindAbility<Skeleton_Sacrifice>(SKELETON_SACRIFICE);
         return base.Init();
     }
 
@@ -52,7 +52,7 @@ public class Enemy_Skeleton : Character, ISpellCaster
             return;
         }
         
-        movementAbility.SetDestination(Victim.Transform.position);
+        movementComponent.SetDestination(Victim.Transform.position);
         
         var inNear = Vector3.Distance(transform.position, Victim.Transform.position) < 0.25f;
 
@@ -77,16 +77,16 @@ public class Enemy_Skeleton : Character, ISpellCaster
             Sacrifice();
         }
 
-        healthAbility.UpdateHealth(isDamage ? -9999F : hitPoints);
+        healthComponent.UpdateHealth(isDamage ? -9999F : hitPoints);
     }
 
     private void Sacrifice()
     {
-        spellsAbility.CastSpell(SKELETON_SACRIFICE, 
+        spellsComponent.CastSpell(SKELETON_SACRIFICE, 
             () => // success 
             {
                 stateMachine.ChangeState(SkeletonState.Sacrificing);
-                movementAbility.StopMovement();
+                movementComponent.StopMovement();
             }, 
             () => // failure
             {
@@ -110,8 +110,8 @@ public class Enemy_Skeleton : Character, ISpellCaster
         Dead,
     }
     
-    public SpellsAbility GetSpellsAbility()
+    public SpellsComponent GetSpellComponent()
     {
-        return spellsAbility;
+        return spellsComponent;
     }
 }

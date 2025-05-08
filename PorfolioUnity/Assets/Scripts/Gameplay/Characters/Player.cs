@@ -2,7 +2,7 @@
 using UnityEngine;
 using UnityEngine.InputSystem;
 
-public class Player : Character, IHealthAbility, ISpellCaster
+public class Player : Character, IHealthComponent, ISpellCaster
 {
     private const string WARRIOR_CHARGE = "WARRIOR_CHARGE";
     private const string WARRIOR_SLASH = "WARRIOR_SLASH";
@@ -17,15 +17,15 @@ public class Player : Character, IHealthAbility, ISpellCaster
     
     public ISpellTarget Victim => null;
     
-    private MovementAbility movementAbility;
-    private HealthAbility healthAbility;
-    private SpellsAbility spellsAbility;
+    private MovementComponent movementComponent;
+    private HealthComponent healthComponent;
+    private SpellsComponent spellsComponent;
     
     protected override void Create()
     {
-        movementAbility = GetComponent<MovementAbility>();
-        healthAbility = GetComponent<HealthAbility>();
-        spellsAbility = GetComponent<SpellsAbility>();
+        movementComponent = GetComponent<MovementComponent>();
+        healthComponent = GetComponent<HealthComponent>();
+        spellsComponent = GetComponent<SpellsComponent>();
     }
 
     protected override UniTask Init()
@@ -35,32 +35,33 @@ public class Player : Character, IHealthAbility, ISpellCaster
         secondAbilityAction.action.started += SecondAbility;
         ultimateAbilityAction.action.started += UltimateAbility;
         
-        spellsAbility.BindAbility<Warrior_Charge>(WARRIOR_CHARGE);
-        spellsAbility.BindAbility<Warrior_Slash>(WARRIOR_SLASH);
-        spellsAbility.BindAbility<Warrior_Smash>(WARRIOR_SMASH);
-        spellsAbility.BindAbility<Warrior_EarthShatter>(WARRIOR_EARTH_SHATTER);
+        GetAuraComponent().ApplyAura<Warrior_Rage>();
+        spellsComponent.BindAbility<Warrior_Charge>(WARRIOR_CHARGE);
+        spellsComponent.BindAbility<Warrior_Slash>(WARRIOR_SLASH);
+        spellsComponent.BindAbility<Warrior_Smash>(WARRIOR_SMASH);
+        spellsComponent.BindAbility<Warrior_EarthShatter>(WARRIOR_EARTH_SHATTER);
         return base.Init();
     }
     
     private void Dash(InputAction.CallbackContext _)
     {
-        spellsAbility.CastSpell(WARRIOR_CHARGE);
+        spellsComponent.CastSpell(WARRIOR_CHARGE);
     }
     
     private void FirstAbility(InputAction.CallbackContext _)
     {
-        spellsAbility.CastSpell(WARRIOR_SLASH);
+        spellsComponent.CastSpell(WARRIOR_SLASH);
     }
     
     private void SecondAbility(InputAction.CallbackContext _)
     {
-        spellsAbility.CastSpell(WARRIOR_SMASH);
+        spellsComponent.CastSpell(WARRIOR_SMASH);
 
     }
     
     private void UltimateAbility(InputAction.CallbackContext _)
     {
-        spellsAbility.CastSpell(WARRIOR_EARTH_SHATTER);
+        spellsComponent.CastSpell(WARRIOR_EARTH_SHATTER);
 
     }
 
@@ -68,13 +69,13 @@ public class Player : Character, IHealthAbility, ISpellCaster
     {
         var input2D = moveAction.action.ReadValue<Vector2>();
         var input3D = Game.IsometricMod * new Vector3(input2D.x, 0f, input2D.y);
-        movementAbility.SetDestination(transform.position + input3D);
+        movementComponent.SetDestination(transform.position + input3D);
     }
 
     public override void Hit(Hit hit)
     {
         var hitPoints = hit.InvokeHit();
-        if (!healthAbility.UpdateHealth(hitPoints))
+        if (!healthComponent.UpdateHealth(hitPoints))
         {
             Debug.Log("Dead");    
         }
@@ -89,13 +90,13 @@ public class Player : Character, IHealthAbility, ISpellCaster
         ultimateAbilityAction.action.started -= UltimateAbility;
     }
 
-    public HealthAbility GetHealthAbility()
+    public HealthComponent GetHealthComponent()
     {
-        return healthAbility;
+        return healthComponent;
     }
     
-    public SpellsAbility GetSpellsAbility()
+    public SpellsComponent GetSpellComponent()
     {
-        return spellsAbility;
+        return spellsComponent;
     }
 }

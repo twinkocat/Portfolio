@@ -1,7 +1,7 @@
 ﻿using System;
 using UnityEngine;
 
-public class HealthAbility : CharacterAbility
+public class HealthComponent : CharacterComponent
 {
     [SerializeField] private ReactiveProperty<float> health;
     [SerializeField] private ReactiveProperty<float> maxHealth;
@@ -26,6 +26,12 @@ public class HealthAbility : CharacterAbility
         };
     }
 
+    public void UpdateMaxHealth(float deltaMaxHealth, HealthSetMod mod = HealthSetMod.Default)
+    {
+        var newMaxHealth = maxHealth.Value + deltaMaxHealth;
+        SetMaxHealth(newMaxHealth, mod);
+    }
+
     public bool UpdateHealth(float deltaHealth)
     {
         health.Value = Mathf.Clamp(health.Value + deltaHealth, 0, maxHealth.Value);
@@ -48,7 +54,7 @@ public enum HealthSetMod
 }
 
 
-public interface IHealthAbility
+public interface IHealthComponent
 {
-    HealthAbility GetHealthAbility();
+    HealthComponent GetHealthComponent();
 }

@@ -18,6 +18,7 @@ public class GameLifetimeScope : LifetimeScope
     [SerializeField] private View[] views;
     [SerializeField] private UIRoot uiRoot;
     
+    private readonly AuraScriptsConfigurator auraScriptsConfigurator = new(); 
     private readonly WorldStateConfigurator worldStateConfigurator = new(); 
     private readonly MediatorsConfigurator mediatorsConfigurator = new();
     private readonly SpellScriptsConfigurator spellScriptsConfigurator = new();
@@ -36,9 +37,10 @@ public class GameLifetimeScope : LifetimeScope
         worldStateConfigurator.Configure(builder);
         mediatorsConfigurator.Configure(builder);
         spellScriptsConfigurator.Configure(builder);
+        auraScriptsConfigurator.Configure(builder);
         Resources.LoadAll<SpellData>("SpellData").ForEach(data => builder.RegisterInstance(data).AsSelf());
+        Resources.LoadAll<AuraData>("AuraData").ForEach(data => builder.RegisterInstance(data).AsSelf());
     }
-    
     
     
 #if UNITY_EDITOR
@@ -64,6 +66,11 @@ public class GameLifetimeScope : LifetimeScope
         (
             registrationLineGenerator: type => $"builder.Register<{type.FullName}>(Lifetime.Transient);"
         );
+        
+        LifetimeCodeGenerator.GenerateRegistrationCode<AuraScript, AuraScriptsConfigurator>
+        (
+            registrationLineGenerator: type => $"builder.Register<{type.FullName}>(Lifetime.Transient);"
+        );
     }
 #endif
 }
@@ -83,6 +90,12 @@ public partial class WorldStateConfigurator
 }
 
 public partial class SpellScriptsConfigurator
+{
+    public void Configure(IContainerBuilder builder) => Configure_Internal(builder);
+    partial void Configure_Internal(IContainerBuilder builder);
+}
+
+public partial class AuraScriptsConfigurator
 {
     public void Configure(IContainerBuilder builder) => Configure_Internal(builder);
     partial void Configure_Internal(IContainerBuilder builder);

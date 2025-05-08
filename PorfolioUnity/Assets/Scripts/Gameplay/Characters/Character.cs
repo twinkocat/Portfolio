@@ -3,9 +3,8 @@ using System.Threading;
 using Cysharp.Threading.Tasks;
 using MyBox;
 using UnityEngine;
-using UnityEngine.Serialization;
 
-public abstract class Character : PoolableBehaviour, ISpellTarget
+public abstract class Character : PoolableBehaviour, ISpellTarget, IAuraTarget
 {
     [SerializeField] protected bool allowTick = true;
     [SerializeField] private TargetFlags targetFlags;
@@ -14,14 +13,16 @@ public abstract class Character : PoolableBehaviour, ISpellTarget
     public Transform Transform => transform;
     public CancellationTokenSource DeadCTS { get; } = new();
     public CancellationToken CancellationToken => linkedCTS.Token;
-    
+
+    private AuraComponent auraComponent;
     private CancellationTokenSource linkedCTS;
-    private HashSet<CharacterAbility> characterAbilities;
+    private HashSet<CharacterComponent> characterAbilities;
     
     private void Awake()
     {
+        auraComponent = GetComponent<AuraComponent>();
         linkedCTS = CancellationTokenSource.CreateLinkedTokenSource(DeadCTS.Token, destroyCancellationToken);
-        characterAbilities = new HashSet<CharacterAbility> (GetComponents<CharacterAbility>());
+        characterAbilities = new HashSet<CharacterComponent> (GetComponents<CharacterComponent>());
         Create(); 
         characterAbilities.ForEach(ability => ability.Create());
     }
@@ -87,5 +88,10 @@ public abstract class Character : PoolableBehaviour, ISpellTarget
     public override void Dispose()
     {
         characterAbilities.ForEach(ability => ability.Dispose());
+    }
+
+    public AuraComponent GetAuraComponent()
+    {
+        return auraComponent;
     }
 }

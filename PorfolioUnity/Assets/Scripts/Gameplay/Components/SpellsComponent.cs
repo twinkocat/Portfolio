@@ -3,7 +3,7 @@ using System.Collections.Generic;
 using System.Threading;
 using UnityEngine;
 
-public class SpellsAbility : CharacterAbility
+public class SpellsComponent : CharacterComponent
 {
     [SerializeField] private ReactiveProperty<float> attackPower;
     [SerializeField] private ReactiveProperty<float> attackSpeed;
@@ -13,15 +13,21 @@ public class SpellsAbility : CharacterAbility
     public ReactiveProperty<float> AttackPower => attackPower;
     public ReactiveProperty<float> AttackSpeed => attackSpeed;
     public ReactiveProperty<float> LevelMod => levelMod;
-
-
+    
     private readonly Dictionary<string, Func<SpellScript>> spellBindings = new();
+
+    public Action OnCast;
     
     public void CastSpell(string spellName, Action successCallback = null, Action failureCallback = null, Action onCastEndCallback = null)
     {
         if (spellBindings.TryGetValue(spellName, out var spellFunc))
         {
-            spellFunc().Cast(successCallback, failureCallback, onCastEndCallback);
+            spellFunc().Cast(() =>
+            {
+                OnCast?.Invoke();
+                successCallback?.Invoke();
+            }, 
+                failureCallback, onCastEndCallback);
         }        
     }
 
@@ -46,6 +52,6 @@ public interface ISpellCaster
     ISpellTarget Victim { get; }
     CancellationToken CancellationToken { get; }
     Transform Transform { get; }
-    SpellsAbility GetSpellsAbility();
+    SpellsComponent GetSpellComponent();
     
 }
