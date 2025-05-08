@@ -24,4 +24,14 @@ public class Warrior_EarthShatter : CircleSpellScript<Warrior_EarthShatterData>
             hitPosition = target.Transform.position,
         });
     }
+    
+    protected override void OnCooldownTick(TimerData timerData)
+    {
+        Player.OnCooldownUpdated?.Invoke(2, 1 - timerData.GetNormalized());
+    }
+
+    protected override void OnCooldownComplete()
+    {
+        Player.OnCooldownUpdated?.Invoke(2, 0);
+    }
 }

@@ -27,4 +27,14 @@ public class Warrior_Slash : ConeSpellScript<Warrior_SlashData>
             hitPosition = target.Transform.position,
         });
     }
+
+    protected override void OnCooldownTick(TimerData timerData)
+    {
+        Player.OnCooldownUpdated?.Invoke(0, 1 - timerData.GetNormalized());
+    }
+
+    protected override void OnCooldownComplete()
+    {
+        Player.OnCooldownUpdated?.Invoke(0, 0);
+    }
 }

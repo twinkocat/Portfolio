@@ -18,7 +18,8 @@ public class MovementComponent : CharacterComponent
     [SerializeField] private float defaultMoveAnimSpeed = 1.0f;
     [SerializeField] private float maxMoveAnimSpeed = 2.0F;
 
-    private float currentSpeed = 1F;
+    public ReactiveProperty<float> CurrentSpeed { get; private set; } = new();
+    
 
     private float moveSpeed;
     private float moveMagnitude;
@@ -28,7 +29,8 @@ public class MovementComponent : CharacterComponent
 
     public override void Init()
     {
-        currentSpeed = defaultMoveSpeed;
+        CurrentSpeed.PreChangeCommit = (value) => Mathf.Clamp(value, minMoveSpeed, maxMoveSpeed);
+        CurrentSpeed.Value = defaultMoveSpeed;
     }
 
     public void SetDestination(Vector3 destination)
@@ -50,8 +52,8 @@ public class MovementComponent : CharacterComponent
     public override void Tick(float deltaTime)
     {
         moveMagnitude = moveVector.magnitude;
-        moveSpeed = moveVector.magnitude * Mathf.Clamp(currentSpeed, minMoveSpeed, maxMoveSpeed);
-        animSpeedNormalized = currentSpeed / maxMoveSpeed;
+        moveSpeed = moveVector.magnitude * CurrentSpeed.Value;
+        animSpeedNormalized = CurrentSpeed.Value / maxMoveSpeed;
         transform.position += moveVector * (moveSpeed * deltaTime);
         transform.rotation = Quaternion.Slerp(transform.rotation, lookRotation, deltaTime * rotationSpeed);
     }
@@ -61,4 +63,9 @@ public class MovementComponent : CharacterComponent
         animator.SetFloat(MoveAnimSpeed, moveMagnitude * Mathf.Lerp(defaultMoveAnimSpeed, maxMoveAnimSpeed, animSpeedNormalized));
         animator.SetFloat(MoveSpeed, moveSpeed);
     }
+}
+
+public interface IMovementComponent
+{
+    MovementComponent GetMovementComponent();
 }

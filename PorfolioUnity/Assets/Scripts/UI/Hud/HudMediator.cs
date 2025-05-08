@@ -2,18 +2,35 @@
 {
     public override void Start()
     {
-        //PlayerSpellScript.OnCooldownUpdated += OnCooldownUpdated;
+        Player.OnCooldownUpdated += OnCooldownUpdated;
         Game.OnPlayerSpawn += PlayerSpawn;
 
     }
 
     private void PlayerSpawn(Player player)
     {
-        var ability = player.GetHealthComponent();
-
-        View.hpBar.SetValues(ability.Health.Value, ability.MaxHealth.Value);
-        ability.Health.PropertyChanged += View.hpBar.SetCurrentValue;
-        ability.MaxHealth.PropertyChanged += View.hpBar.SetMaxValue;
+        var health = player.GetHealthComponent();
+        var resource = player.GetResourceComponent();
+        var spell = player.GetSpellComponent();
+        var move = player.GetMovementComponent();
+        
+        
+        View.hpBar.SetValues(health.Health.Value, health.MaxHealth.Value);
+        health.Health.PropertyChanged += View.hpBar.SetCurrentValue;
+        health.MaxHealth.PropertyChanged += View.hpBar.SetMaxValue;
+        
+        View.resourceBar.SetValues(resource.Resource.Value, resource.MaxResource.Value);
+        resource.Resource.PropertyChanged += View.resourceBar.SetCurrentValue;
+        resource.MaxResource.PropertyChanged += View.resourceBar.SetMaxValue;
+     
+        View.attackStat.InitStatValues("Attack Power", spell.AttackPower.Value);
+        spell.AttackPower.PropertyChanged += View.attackStat.SetStatValue;
+        
+        View.attackSpeed.InitStatValues("Attack Speed", spell.AttackSpeed.Value);
+        spell.AttackSpeed.PropertyChanged += View.attackSpeed.SetStatValue;
+        
+        View.moveSpeed.InitStatValues("Move Speed", move.CurrentSpeed.Value);
+        move.CurrentSpeed.PropertyChanged += View.moveSpeed.SetStatValue;
     }
     
 
@@ -30,7 +47,7 @@
 
     public override void Dispose()
     {
-        //PlayerSpellScript.OnCooldownUpdated -= OnCooldownUpdated;
+        Player.OnCooldownUpdated -= OnCooldownUpdated;
 
     }
 }

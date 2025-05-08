@@ -8,6 +8,8 @@ public abstract class AuraScript : IDisposable
     private IAuraTarget victim;
     private UniTask auraTask;
 
+    public event Action<AuraScript> NotifyDestroy;
+     
     public abstract void Apply();
     public abstract void Dispose();
     

@@ -14,4 +14,14 @@ public class Warrior_Charge : ChargeSpellScript<Warrior_ChargeData>
     protected override void OnHit(ISpellTarget target)
     {
     }
+    
+    protected override void OnCooldownTick(TimerData timerData)
+    {
+        Player.OnCooldownUpdated?.Invoke(3, 1 - timerData.GetNormalized());
+    }
+
+    protected override void OnCooldownComplete()
+    {
+        Player.OnCooldownUpdated?.Invoke(3, 0);
+    }
 }

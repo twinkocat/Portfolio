@@ -26,11 +26,11 @@ public class Warrior_Smash : CircleSpellScript<Warrior_SmashData>
 
     protected override void OnCooldownTick(TimerData timerData)
     {
-        
+        Player.OnCooldownUpdated?.Invoke(1, 1 - timerData.GetNormalized());
     }
 
     protected override void OnCooldownComplete()
     {
-        
+        Player.OnCooldownUpdated?.Invoke(1, 0);
     }
 }

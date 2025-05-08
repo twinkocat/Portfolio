@@ -1,13 +1,17 @@
-﻿using Cysharp.Threading.Tasks;
+﻿using System;
+using Cysharp.Threading.Tasks;
 using UnityEngine;
 using UnityEngine.InputSystem;
 
-public class Player : Character, IHealthComponent, ISpellCaster
+public class Player : Character, IHealthComponent, ISpellCaster, IMovementComponent, IResourceComponent
 {
+    public static Action<int, float> OnCooldownUpdated;
+    
     private const string WARRIOR_CHARGE = "WARRIOR_CHARGE";
     private const string WARRIOR_SLASH = "WARRIOR_SLASH";
     private const string WARRIOR_SMASH = "WARRIOR_SMASH";
     private const string WARRIOR_EARTH_SHATTER = "WARRIOR_EARTH_SHATTER";
+    private const string PLAYER_SPAWN = "PLAYER_SPAWN";
     
     [SerializeField] private InputActionReference moveAction;
     [SerializeField] private InputActionReference dashAction;
@@ -20,12 +24,14 @@ public class Player : Character, IHealthComponent, ISpellCaster
     private MovementComponent movementComponent;
     private HealthComponent healthComponent;
     private SpellsComponent spellsComponent;
+    private ResourceComponent resourceComponent;
     
     protected override void Create()
     {
         movementComponent = GetComponent<MovementComponent>();
         healthComponent = GetComponent<HealthComponent>();
         spellsComponent = GetComponent<SpellsComponent>();
+        resourceComponent = GetComponent<ResourceComponent>();
     }
 
     protected override UniTask Init()
@@ -36,13 +42,20 @@ public class Player : Character, IHealthComponent, ISpellCaster
         ultimateAbilityAction.action.started += UltimateAbility;
         
         GetAuraComponent().ApplyAura<Warrior_Rage>();
+        spellsComponent.BindAbility<Player_Respawn>(PLAYER_SPAWN);
         spellsComponent.BindAbility<Warrior_Charge>(WARRIOR_CHARGE);
         spellsComponent.BindAbility<Warrior_Slash>(WARRIOR_SLASH);
         spellsComponent.BindAbility<Warrior_Smash>(WARRIOR_SMASH);
         spellsComponent.BindAbility<Warrior_EarthShatter>(WARRIOR_EARTH_SHATTER);
         return base.Init();
     }
-    
+
+    protected override UniTask PostInit()
+    {
+        spellsComponent.CastSpell(PLAYER_SPAWN);
+        return base.PostInit();
+    }
+
     private void Dash(InputAction.CallbackContext _)
     {
         spellsComponent.CastSpell(WARRIOR_CHARGE);
@@ -98,5 +111,15 @@ public class Player : Character, IHealthComponent, ISpellCaster
     public SpellsComponent GetSpellComponent()
     {
         return spellsComponent;
+    }
+
+    public MovementComponent GetMovementComponent()
+    {
+        return movementComponent;
+    }
+
+    public ResourceComponent GetResourceComponent()
+    {
+        return resourceComponent;
     }
 }

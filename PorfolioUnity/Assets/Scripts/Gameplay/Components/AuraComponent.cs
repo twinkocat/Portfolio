@@ -7,8 +7,16 @@ public class AuraComponent : CharacterComponent
     public void ApplyAura<T>() where T : AuraScript
     {
         var aura = AuraScript.Create<T>(GetOwner<IAuraTarget>());
+        aura.NotifyDestroy += OnAuraDestroyed;
         aura.Apply();
         auras.Add(aura);
+    }
+
+    private void OnAuraDestroyed(AuraScript aura)
+    {
+        aura.NotifyDestroy -= OnAuraDestroyed;
+        aura.Dispose();
+        auras.Remove(aura);
     }
 
     public override void Dispose()

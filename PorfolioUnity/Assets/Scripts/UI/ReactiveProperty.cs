@@ -19,11 +19,12 @@ public class ReactiveProperty<T> : IDisposable where T : IComparable, IComparabl
                 return;
             }
 
-            m_value = value;
+            m_value = PreChangeCommit(value);
             PropertyChanged?.Invoke(value);
         }
     }
-    
+
+    public Func<T, T> PreChangeCommit = (value) => value;  
     public event Action<T> PropertyChanged;
 
     public void Dispose()
