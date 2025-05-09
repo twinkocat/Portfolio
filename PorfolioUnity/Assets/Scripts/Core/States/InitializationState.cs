@@ -9,14 +9,19 @@ public class InitializationState : IGameState, IProgress<float>
     public async UniTask StartAsync(CancellationToken cts)
     {
         await UniTask.Yield();
-        await ResolveCurrentScene(cts);
-        Game.SetState<HubState>();
+        await ResolveCurrentScene(cts, Game.SetState<HubState>, Game.SetState<DevState>);
     }
 
-    private async UniTask ResolveCurrentScene(CancellationToken cts)
+    private async UniTask ResolveCurrentScene(CancellationToken cts, Action onNormal = null, Action onDev = null)
     {
         const int mainSceneIndex = (int)Scene.Main;
         var currentScene = SceneManager.GetActiveScene();
+
+        if (currentScene.buildIndex >= SceneManager.sceneCountInBuildSettings - 1)
+        {
+            onDev?.Invoke();
+            return;
+        }
         
         if (currentScene.buildIndex != mainSceneIndex)
         {
@@ -25,6 +30,7 @@ public class InitializationState : IGameState, IProgress<float>
         }
         
         await UniTask.Yield();
+        onNormal?.Invoke();
     }
     
     public void Report(float value)

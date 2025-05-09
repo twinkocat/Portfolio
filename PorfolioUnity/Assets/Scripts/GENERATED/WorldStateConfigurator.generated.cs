@@ -9,6 +9,7 @@ public partial class WorldStateConfigurator
 {
     partial void Configure_Internal(IContainerBuilder builder)
     {
+        builder.Register<DevState>(Lifetime.Transient).AsSelf().As<IGameState>();
         builder.Register<HubState>(Lifetime.Transient).AsSelf().As<IGameState>();
         builder.Register<InitializationState>(Lifetime.Transient).AsSelf().As<IGameState>();
         builder.Register<LevelState>(Lifetime.Transient).AsSelf().As<IGameState>();
