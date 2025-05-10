@@ -10,10 +10,10 @@ public class Warrior_Smash : CircleSpellScript<Warrior_SmashData>
         var position = GetOwner().Transform.position;
         CircleSpell_Internal(position);
     }
-
+    
     protected override void OnHit(ISpellTarget target)
     {
-        var ownerAbility = GetOwnerAbility();
+        var ownerAbility = GetOwnerSpellsComponent();
         var damage = 2F * ownerAbility.AttackPower.Value * ownerAbility.LevelMod.Value;
         
         target.Hit(new Hit()
@@ -24,6 +24,11 @@ public class Warrior_Smash : CircleSpellScript<Warrior_SmashData>
         });
     }
 
+    public override void OnPlayerSet()
+    {
+        Player.OnSpellSet?.Invoke(1, data);
+    }
+    
     protected override void OnCooldownTick(TimerData timerData)
     {
         Player.OnCooldownUpdated?.Invoke(1, 1 - timerData.GetNormalized());

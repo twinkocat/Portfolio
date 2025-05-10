@@ -5,6 +5,7 @@ using UnityEngine;
 public abstract class SpellData : ScriptableObject
 {
     [ReadOnly] public int id = -1;
+    public Sprite icon;
     public SpellTags tags;
     public TargetFlags targetFlags;
     public float baseCooldown = 0;

@@ -8,7 +8,7 @@ public class SpellView : MonoBehaviour
     
     public void SetImage(Sprite sprite)
     {
-        
+        image.sprite = sprite;
     }
 
     public void SetTimerNormalized(float normalizedTime)

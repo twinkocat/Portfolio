@@ -31,12 +31,13 @@ public abstract class SpellScript
         endCallback?.Invoke();
     }
     
+    public virtual void OnPlayerSet() { }
     protected virtual bool CanCast() { return true; }
     protected virtual void Prepare() { }
     protected abstract UniTask Activate(CancellationToken cancellationToken);
     
     protected abstract void OnHit(ISpellTarget target);
-    protected SpellsComponent GetOwnerAbility() { return ownerComponent; }
+    protected SpellsComponent GetOwnerSpellsComponent() { return ownerComponent; }
     
     protected ISpellCaster GetOwner() { return owner; }
     
@@ -92,19 +93,11 @@ public abstract class SpellScript<TData> : SpellScript where TData : SpellData
     protected float GetCooldown()
     {
         var cooldownMod = data.tags.HasFlag(SpellTags.AffectByAttackSpeed)
-            ? GetOwnerAbility().AttackSpeed.Value * data.attackSpeedMod
+            ? GetOwnerSpellsComponent().AttackSpeed.Value * data.attackSpeedMod
             : 0;
         
         return Mathf.Max(SpellData.MIN_COOLDOWN, data.baseCooldown - cooldownMod);
     }
     
     private bool HasCooldown() { return data.tags.HasFlag(SpellTags.HasCooldown); }
-}
-
-[Flags]
-public enum SpellTags
-{
-    None = 0,
-    HasCooldown = 1 << 0,
-    AffectByAttackSpeed = 1 << 1,
 }

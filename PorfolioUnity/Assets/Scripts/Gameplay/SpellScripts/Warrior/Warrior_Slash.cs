@@ -17,7 +17,7 @@ public class Warrior_Slash : ConeSpellScript<Warrior_SlashData>
 
     protected override void OnHit(ISpellTarget target)
     {
-        var ownerAbility = GetOwnerAbility();
+        var ownerAbility = GetOwnerSpellsComponent();
         var damage = 5F * ownerAbility.LevelMod.Value + ownerAbility.AttackPower.Value;
         
         target.Hit(new Hit
@@ -28,6 +28,11 @@ public class Warrior_Slash : ConeSpellScript<Warrior_SlashData>
         });
     }
 
+    public override void OnPlayerSet()
+    {
+        Player.OnSpellSet?.Invoke(0, data);
+    }
+    
     protected override void OnCooldownTick(TimerData timerData)
     {
         Player.OnCooldownUpdated?.Invoke(0, 1 - timerData.GetNormalized());

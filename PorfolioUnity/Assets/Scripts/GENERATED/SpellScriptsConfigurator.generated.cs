@@ -9,7 +9,6 @@ public partial class SpellScriptsConfigurator
 {
     partial void Configure_Internal(IContainerBuilder builder)
     {
-        builder.Register<Player_Respawn>(Lifetime.Transient);
         builder.Register<Skeleton_Sacrifice>(Lifetime.Transient);
         builder.Register<SkeletonWarrior_Charge>(Lifetime.Transient);
         builder.Register<SkeletonWarrior_SlashAfterCharge>(Lifetime.Transient);

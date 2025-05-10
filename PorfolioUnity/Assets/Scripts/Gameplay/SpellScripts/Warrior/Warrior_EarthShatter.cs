@@ -11,10 +11,15 @@ public class Warrior_EarthShatter : CircleSpellScript<Warrior_EarthShatterData>
         var position = GetOwner().Transform.position;
         CircleSpell_Internal(position);
     }
+    
+    public override void OnPlayerSet()
+    {
+        Player.OnSpellSet?.Invoke(2, data);
+    }
 
     protected override void OnHit(ISpellTarget target)
     {
-        var spellAbility = GetOwnerAbility();
+        var spellAbility = GetOwnerSpellsComponent();
         var damage = spellAbility.AttackPower.Value * 3 * (spellAbility.LevelMod.Value * 2F);
  
         target.Hit(new Hit()

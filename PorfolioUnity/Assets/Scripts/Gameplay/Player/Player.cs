@@ -2,16 +2,17 @@
 using Cysharp.Threading.Tasks;
 using UnityEngine;
 using UnityEngine.InputSystem;
+using VContainer;
 
 public class Player : Character, IHealthComponent, ISpellCaster, IMovementComponent, IResourceComponent
 {
     public static Action<int, float> OnCooldownUpdated;
+    public static Action<int, SpellData> OnSpellSet;
     
     private const string WARRIOR_CHARGE = "WARRIOR_CHARGE";
     private const string WARRIOR_SLASH = "WARRIOR_SLASH";
     private const string WARRIOR_SMASH = "WARRIOR_SMASH";
     private const string WARRIOR_EARTH_SHATTER = "WARRIOR_EARTH_SHATTER";
-    private const string PLAYER_SPAWN = "PLAYER_SPAWN";
     
     [SerializeField] private InputActionReference moveAction;
     [SerializeField] private InputActionReference dashAction;
@@ -19,41 +20,41 @@ public class Player : Character, IHealthComponent, ISpellCaster, IMovementCompon
     [SerializeField] private InputActionReference secondAbilityAction;
     [SerializeField] private InputActionReference ultimateAbilityAction;
     
+    [Inject] private HudMediator hudMediator;
+    
     public ISpellTarget Victim => null;
     
     private MovementComponent movementComponent;
     private HealthComponent healthComponent;
-    private SpellsComponent spellsComponent;
     private ResourceComponent resourceComponent;
+    private PlayerSpellComponent spellsComponent;
     
     protected override void Create()
     {
         movementComponent = GetComponent<MovementComponent>();
         healthComponent = GetComponent<HealthComponent>();
-        spellsComponent = GetComponent<SpellsComponent>();
+        spellsComponent = GetComponent<PlayerSpellComponent>();
         resourceComponent = GetComponent<ResourceComponent>();
     }
 
-    protected override UniTask Init()
+    protected override async UniTask Init()
     {
+        hudMediator.InitHud();
         dashAction.action.started += Dash;
         firstAbilityAction.action.started += FirstAbility;
         secondAbilityAction.action.started += SecondAbility;
         ultimateAbilityAction.action.started += UltimateAbility;
         
         GetAuraComponent().ApplyAura<Warrior_Rage>();
-        spellsComponent.BindAbility<Player_Respawn>(PLAYER_SPAWN);
         spellsComponent.BindAbility<Warrior_Charge>(WARRIOR_CHARGE);
         spellsComponent.BindAbility<Warrior_Slash>(WARRIOR_SLASH);
         spellsComponent.BindAbility<Warrior_Smash>(WARRIOR_SMASH);
         spellsComponent.BindAbility<Warrior_EarthShatter>(WARRIOR_EARTH_SHATTER);
-        return base.Init();
-    }
-
-    protected override UniTask PostInit()
-    {
-        spellsComponent.CastSpell(PLAYER_SPAWN);
-        return base.PostInit();
+        spellsComponent.PlayerSet();
+        
+        await UniTask.DelayFrame(1);
+        
+        hudMediator.Show();
     }
 
     private void Dash(InputAction.CallbackContext _)

@@ -13,6 +13,7 @@ MonoBehaviour:
   m_Name: Warrior_EarthShatterData
   m_EditorClassIdentifier: 
   id: 1168367079
+  icon: {fileID: 21300000, guid: 70cbb293ac526de44bb942e80c6a375f, type: 3}
   tags: -1
   targetFlags: 4
   baseCooldown: 15

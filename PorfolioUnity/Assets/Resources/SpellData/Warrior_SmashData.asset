@@ -13,6 +13,7 @@ MonoBehaviour:
   m_Name: Warrior_SmashData
   m_EditorClassIdentifier: 
   id: 362535865
+  icon: {fileID: 21300000, guid: fae2f759f70e6874c99531cc3d0bc511, type: 3}
   tags: -1
   targetFlags: 4
   baseCooldown: 6

@@ -1,10 +1,22 @@
-﻿public class HudMediator : Mediator<HudView>
+﻿using MyBox;
+
+public class HudMediator : Mediator<HudView>
 {
     public override void Start()
     {
         Player.OnCooldownUpdated += OnCooldownUpdated;
+        Player.OnSpellSet += OnPlayerSpellSet;
         Game.OnPlayerSpawn += PlayerSpawn;
+    }
 
+    public void InitHud()
+    {
+        View.spellView.ForEach(spellView => spellView.SetTimerNormalized(0));
+    }
+
+    private void OnPlayerSpellSet(int index, SpellData spellData)
+    {
+        View.spellView[index].SetImage(spellData.icon);
     }
 
     private void PlayerSpawn(Player player)
@@ -39,15 +51,9 @@
         View.spellView[index].SetTimerNormalized(value);
     }
     
-    
-    public SpellView GetSpellView(int index)
-    {
-        return View.spellView[index];
-    }
-
     public override void Dispose()
     {
         Player.OnCooldownUpdated -= OnCooldownUpdated;
-
+        Player.OnSpellSet -= OnPlayerSpellSet;
     }
 }

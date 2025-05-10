@@ -14,7 +14,7 @@ public class SpellsComponent : CharacterComponent
     public ReactiveProperty<float> AttackSpeed => attackSpeed;
     public ReactiveProperty<float> LevelMod => levelMod;
     
-    private readonly Dictionary<string, Func<SpellScript>> spellBindings = new();
+    protected readonly Dictionary<string, Func<SpellScript>> spellBindings = new();
 
     public Action OnCast;
     
